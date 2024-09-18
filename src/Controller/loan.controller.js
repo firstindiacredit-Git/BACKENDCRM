@@ -634,6 +634,7 @@ export const getAllLoanList = async (req, res) => {
     const carLoans = await CarLoan.find({});
     const homeLoans = await HomeLoan.find({});
     const personalLoans = await PersonalLoan.find({});
+    const businessLoans = await BusinessLoan.find({});
 
     const allLoanList = [];
     carLoans.forEach((loan) =>
@@ -644,6 +645,9 @@ export const getAllLoanList = async (req, res) => {
     );
     personalLoans.forEach((loan) =>
       allLoanList.push({ ...loan.toObject(), loanType: "PersonalLoan" })
+    );
+    businessLoans.forEach((loan) =>
+      allLoanList.push({ ...loan.toObject(), loanType: "BusinessLoan" })
     );
 
     return res.status(200).json({ allLoanList });
@@ -667,6 +671,9 @@ export const getAllCheckedLoanList = async (req, res) => {
     const personalLoans = await PersonalLoan.find({
       $or: [{ isApproved: true }, { isRejected: true }],
     });
+    const businessLoans = await BusinessLoan.find({
+      $or: [{ isApproved: true }, { isRejected: true }],
+    });
 
     const allLoanList = [];
     carLoans.forEach((loan) =>
@@ -677,6 +684,9 @@ export const getAllCheckedLoanList = async (req, res) => {
     );
     personalLoans.forEach((loan) =>
       allLoanList.push({ ...loan.toObject(), loanType: "PersonalLoan" })
+    );
+    businessLoans.forEach((loan) =>
+      allLoanList.push({ ...loan.toObject(), loanType: "BusinessLoan" })
     );
 
     return res.status(200).json({ allLoanList });
@@ -704,6 +714,10 @@ export const getAllPendingLoanList = async (req, res) => {
       isApproved: false,
       isRejected: false,
     });
+    const businessLoans = await BusinessLoan.find({
+      isApproved: false,
+      isRejected: false,
+    });
 
     const pendingLoanList = [];
     carLoans.forEach((loan) =>
@@ -715,7 +729,9 @@ export const getAllPendingLoanList = async (req, res) => {
     personalLoans.forEach((loan) =>
       pendingLoanList.push({ ...loan.toObject(), loanType: "PersonalLoan" })
     );
-
+    businessLoans.forEach((loan) =>
+      pendingLoanList.push({ ...loan.toObject(), loanType: "BusinessLoan" })
+    );
     return res.status(200).json({ pendingLoanList });
   } catch (error) {
     console.error("Error fetching pending loans", error);
@@ -731,6 +747,11 @@ export const getLoanList = async (req, res) => {
   try {
     console.log(`Fetching loans for refID: ${referralId}`);
     const carLoans = await CarLoan.find({
+      referralId: referralId,
+      isApproved: false,
+      isRejected: false,
+    });
+    const businessLoans = await BusinessLoan.find({
       referralId: referralId,
       isApproved: false,
       isRejected: false,
@@ -755,6 +776,9 @@ export const getLoanList = async (req, res) => {
     );
     personalLoans.forEach((loan) =>
       LoanList.push({ ...loan.toObject(), loanType: "PersonalLoan" })
+    );
+    businessLoans.forEach((loan) =>
+      LoanList.push({ ...loan.toObject(), loanType: "BusinessLoan" })
     );
 
     return res.status(200).json({ LoanList });
@@ -791,6 +815,13 @@ export const getLoanHistory = async (req, res) => {
         { isApproved: true, isRejected: false },
       ],
     });
+    const businessLoans = await BusinessLoan.find({
+      referralId: referralId,
+      $or: [
+        { isApproved: false, isRejected: true },
+        { isApproved: true, isRejected: false },
+      ],
+    });
 
     const LoanList = [];
     carLoans.forEach((loan) =>
@@ -801,6 +832,9 @@ export const getLoanHistory = async (req, res) => {
     );
     personalLoans.forEach((loan) =>
       LoanList.push({ ...loan.toObject(), loanType: "PersonalLoan" })
+    );
+    businessLoans.forEach((loan) =>
+      LoanList.push({ ...loan.toObject(), loanType: "BusinessLoan" })
     );
 
     return res.status(200).json({ LoanList });
@@ -819,8 +853,9 @@ export const detailLoan = async (req, res) => {
     let car = await CarLoan.findOne({ _id });
     let home = await HomeLoan.findOne({ _id });
     let personal = await PersonalLoan.findOne({ _id });
+    let business = await BusinessLoan.findOne({ _id });
 
-    if (!car && !home && !personal) {
+    if (!car && !home && !personal && !business) {
       return res.status(404).json({
         message: "No loans found for the specified user",
       });
@@ -830,6 +865,7 @@ export const detailLoan = async (req, res) => {
       car,
       home,
       personal,
+      business,
     });
   } catch (error) {
     console.error("error getting user details", error);
@@ -848,6 +884,7 @@ export const getNotifications = async (req, res) => {
       { model: CarLoan, name: "Car Loan" },
       { model: HomeLoan, name: "Home Loan" },
       { model: PersonalLoan, name: "Personal Loan" },
+      { model: BusinessLoan, name: "Business Loan" },
     ];
 
     let notifications = [];
@@ -974,11 +1011,16 @@ export const approveLoan = async (req, res) => {
       { _id },
       { $set: { isApproved: true, isRejected: false } }
     );
+    let businessUpdate = await BusinessLoan.updateOne(
+      { _id },
+      { $set: { isApproved: true, isRejected: false } }
+    );
 
     if (
       !carUpdate.nModified ||
       !homeUpdate.nModified ||
-      !personalUpdate.nModified
+      !personalUpdate.nModified ||
+      !businessUpdate.nModified
     ) {
       await sendApprovedNotification(email, loanId);
       return res.status(200).json({ message: "Loan approved successfully" });
@@ -1008,11 +1050,16 @@ export const rejectLoan = async (req, res) => {
       { _id },
       { $set: { isRejected: true, isApproved: false, rejectMessage: message } }
     );
+    let businessUpdate = await BusinessLoan.updateOne(
+      { _id },
+      { $set: { isRejected: true, isApproved: false, rejectMessage: message } }
+    );
 
     if (
       !carUpdate.nModified ||
       !homeUpdate.nModified ||
-      !personalUpdate.nModified
+      !personalUpdate.nModified ||
+      !businessUpdate.nModified
     ) {
       await sendRejectedNotification(email, loanId);
       return res.status(200).json({
