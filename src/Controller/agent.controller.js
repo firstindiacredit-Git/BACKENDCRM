@@ -128,8 +128,8 @@ export const agentLogout = async (req, res) => {
 
     console.log("Logging out agent:", referralId);
 
-    // Check if the agent exists
-    const agent = await Agent.findById(referralId);
+    // Find the agent by referralId (not by ObjectId)
+    const agent = await Agent.findOne({ referralId });
 
     if (!agent) {
       return res.status(404).json({ message: "Agent not found" });
@@ -144,12 +144,12 @@ export const agentLogout = async (req, res) => {
       message: "Agent logged out successfully",
       isLogin: agent.isLogin,
     });
-    console.log("Agent Logged out Successfully");
   } catch (error) {
     console.error("Error during logout:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 // cons
 
 export const agentSignup = async (req, res) => {
