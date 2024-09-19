@@ -121,11 +121,22 @@ export const agentLogin = async (req, res) => {
 export const agentLogout = async (req, res) => {
   try {
     const { referralId } = req.body;
+
+    if (!referralId) {
+      return res.status(400).json({ message: "Referral ID is required" });
+    }
+
     console.log("Logging out agent:", referralId);
 
+    // Check if the agent exists
     const agent = await Agent.findById(referralId);
 
-    agent.isLogin = false;
+    if (!agent) {
+      return res.status(404).json({ message: "Agent not found" });
+    }
+
+    // Update the agent's login status
+    agent.isLogin = false; // Set to boolean false for logout
     await agent.save();
 
     console.log("Agent updated:", agent);
