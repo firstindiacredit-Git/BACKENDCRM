@@ -25,8 +25,8 @@ const agentSchema = new mongoose.Schema({
     required: true,
   },
   isLogin: {
-    type: String,
-    default: "Offline",
+    type: Boolean,
+    default: false,
   },
   aadhaarImage: { type: String },
   panCardImage: { type: String },

@@ -101,7 +101,7 @@ export const agentLogin = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    agent.isLogin = "Online";
+    agent.isLogin = true;
     await agent.save();
 
     // Generate JWT token
@@ -120,12 +120,12 @@ export const agentLogin = async (req, res) => {
 
 export const agentLogout = async (req, res) => {
   try {
-    const { agentId } = req.body;
-    console.log("Logging out agent:", agentId);
+    const { referralId } = req.body;
+    console.log("Logging out agent:", referralId);
 
-    const agent = await Agent.findById(agentId);
+    const agent = await Agent.findById(referralId);
 
-    agent.isLogin = "Offline";
+    agent.isLogin = false;
     await agent.save();
 
     console.log("Agent updated:", agent);
