@@ -150,6 +150,7 @@ export const agentLogout = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+// cons
 
 export const agentSignup = async (req, res) => {
   try {
