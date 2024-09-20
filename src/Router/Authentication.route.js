@@ -3,6 +3,7 @@ import {
   forgotPass,
   resetPassword,
   userLogin,
+  allUsers,
 } from "../Controller/user.controller.js";
 import {
   agentLogin,
@@ -31,6 +32,7 @@ router1.route("/user/resendOTP").post(resendOTP);
 router1.route("/agent/delete").delete(agentDelete);
 router1.route("/agent/login").post(agentLogin);
 router1.route("/agent/logout").post(agentLogout);
+router1.route("/agent/user").get(allUsers);
 router1.route("/agent/signup").post(
   upload.fields([
     { name: "aadhaarImage", maxCount: 1 },

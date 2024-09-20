@@ -52,6 +52,10 @@ const userExists = async (email) => {
   const user = await User.findOne({ email });
   return !!user;
 };
+export const allUsers = async (req, res) => {
+  const users = await User.find();
+  return res.status(200).json(users);
+};
 
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
@@ -157,5 +161,6 @@ export default {
   userLogin,
   verifyToken,
   forgotPass,
+  allUsers,
   resetPassword,
 };

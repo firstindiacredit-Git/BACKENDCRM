@@ -43,6 +43,7 @@ const homeLoanSchema = new mongoose.Schema(
     residenceType: { type: String, required: true },
     currentAddress: { type: String, required: true },
     cityState: { type: String, required: true },
+    city: { type: String, required: true },
     pincode: { type: String, required: true },
     salary: { type: Number, required: true },
     companyName: { type: String, required: true },
