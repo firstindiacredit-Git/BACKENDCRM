@@ -91,9 +91,7 @@ export const agentLogin = async (req, res) => {
     // Check if agent exists
     const agent = await Agent.findOne({ referralId });
     if (!agent) {
-      return res
-        .status(400)
-        .json({ message: "Agent does not exist. Please sign up." });
+      return res.status(400).json({ message: "Agent does not exist." });
     }
 
     const isMatch = await agent.comparePassword(password);
@@ -196,6 +194,38 @@ export const agentSignup = async (req, res) => {
     await agent.save();
 
     res.status(201).json({ message: "Agent created successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+export const agentProfile = async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const profileImage = req.files?.profileImage?.[0];
+    if (!profileImage || !aadhaarImage || !panCardImage) {
+      console.log("Required files are missing");
+      throw new Error("Required files are missing");
+    }
+
+    console.log("Uploading Profile image...");
+    const uploadedProfile = await uploadOnCloudinary(profileImage);
+    console.log("Profile image uploaded:", uploadedProfile.url);
+
+    console.log("Uploading Aadhaar image...");
+    const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+
+    console.log("Uploading Pan Card image...");
+    const uploadedPanCard = await uploadOnCloudinary(panCardImage);
+    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+
+    // Save the URLs and other profile details to your database here
+    await Agent.updateOne({});
+
+    res.status(201).json({ message: "Agent profile updated successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });

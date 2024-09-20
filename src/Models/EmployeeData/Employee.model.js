@@ -30,6 +30,7 @@ const agentSchema = new mongoose.Schema({
   },
   aadhaarImage: { type: String },
   panCardImage: { type: String },
+  profileImage: { type: String },
 });
 
 // Adding a static method to hash password

@@ -8,6 +8,7 @@ import {
   agentLogin,
   agentLogout,
   agentSignup,
+  agentProfile,
   userSignup,
   verifyOTP,
   allAgents,
@@ -38,6 +39,7 @@ router1.route("/agent/signup").post(
   agentSignup
 );
 router1.route("/agent/allagents").get(allAgents);
+router1.route("/agent/:agentId").patch(agentProfile);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 router1.route("/admin/signup").post(adminSignup);

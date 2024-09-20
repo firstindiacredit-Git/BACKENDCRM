@@ -13,9 +13,26 @@ const uploadOnCloudinary = async (file) => {
       throw new Error("File is missing");
     }
 
+    // Check if the file is an image or PDF
+    const validFileTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "application/pdf",
+    ];
+    if (!validFileTypes.includes(file.mimetype)) {
+      throw new Error("Invalid file type. Only images and PDFs are allowed.");
+    }
+
     return new Promise((resolve, reject) => {
+      const uploadOptions = {
+        resource_type: file.mimetype === "application/pdf" ? "auto" : "image",
+        format: file.mimetype === "application/pdf" ? "pdf" : null,
+      };
+
       const stream = cloudinary.uploader.upload_stream(
-        { resource_type: "auto" },
+        uploadOptions,
         (error, result) => {
           if (error) {
             console.error("Error uploading to Cloudinary:", error.message);
@@ -34,5 +51,4 @@ const uploadOnCloudinary = async (file) => {
     throw error;
   }
 };
-
 export { uploadOnCloudinary };
