@@ -4,7 +4,7 @@ import router1 from "./Router/Authentication.route.js";
 import router from "./Router/Loan.route.js";
 import { config } from "dotenv";
 import cors from "cors";
-
+import rateLimit from "express-rate-limit";
 const app = express();
 
 // Load environment variables
@@ -15,6 +15,14 @@ config();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
+const limiter = rateLimit({
+  windowMs: 20 * 60 * 1000, // 20 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again in an hour!",
+});
+
+app.use(limiter);
+
 // CORS configuration
 const corsOptions = {
   origin: ["https://crm.firstindiacredit.com", "http://localhost:5173"],
@@ -22,6 +30,16 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    res.status(400).json({ error: "Invalid JSON payload" });
+  } else if (err.name === "ValidationError") {
+    res.status(400).json({ error: err.message });
+  } else {
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 // Apply CORS middleware
 app.use(cors(corsOptions));
