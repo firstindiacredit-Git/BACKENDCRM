@@ -9,7 +9,7 @@ import {
   agentLogin,
   agentLogout,
   agentSignup,
-  agentProfile,
+  // agentProfile,
   userSignup,
   verifyOTP,
   allAgents,
@@ -17,6 +17,8 @@ import {
   agentDetail,
   agentDelete,
   resendOTP,
+  agentKYC,
+  agentKYCStatus,
 } from "../Controller/agent.controller.js";
 import { adminLogin, adminSignup } from "../Controller/admin.controller.js";
 import verifyToken from "../Middlewares/UserAuth.middleware.js";
@@ -33,6 +35,16 @@ router1.route("/agent/delete").delete(agentDelete);
 router1.route("/agent/login").post(agentLogin);
 router1.route("/agent/logout").post(agentLogout);
 router1.route("/agent/user").get(allUsers);
+router1.route("/agent/kycstatus/:id").get(agentKYCStatus);
+router1.route("/agent/kyc/:id").post(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "resumeImage", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+  ]),
+  agentKYC
+);
 router1.route("/agent/signup").post(
   upload.fields([
     { name: "aadhaarImage", maxCount: 1 },
@@ -41,7 +53,7 @@ router1.route("/agent/signup").post(
   agentSignup
 );
 router1.route("/agent/allagents").get(allAgents);
-router1.route("/agent/:agentId").patch(agentProfile);
+// router1.route("/agent/:agentId").patch(agentProfile);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 router1.route("/admin/signup").post(adminSignup);

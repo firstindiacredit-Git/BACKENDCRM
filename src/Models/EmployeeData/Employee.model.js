@@ -28,8 +28,13 @@ const agentSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isKYCVerified: {
+    type: Boolean,
+    default: false,
+  },
   aadhaarImage: { type: String },
   panCardImage: { type: String },
+  resumeImage: { type: String },
   profileImage: { type: String },
 });
 

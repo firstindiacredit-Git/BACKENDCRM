@@ -199,33 +199,82 @@ export const agentSignup = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-export const agentProfile = async (req, res) => {
+
+export const agentKYCStatus = async (req, res) => {
   try {
-    const { email, phone } = req.body;
+    const { id: AGENTID } = req.params; // Access AGENTID from params
+
+    // console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
+
+    const agent = await Agent.findOne({ _id: AGENTID }); // Use AGENTID directly
+    if (!agent) {
+      return res.status(404).json({ message: "Agent not found" });
+    }
+    res.status(200).json({ isKYCVerified: agent.isKYCVerified });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const agentKYC = async (req, res) => {
+  try {
+    const { AGENTID } = req.body;
     const aadhaarImage = req.files?.aadhaarImage?.[0];
     const panCardImage = req.files?.panCardImage?.[0];
+    const resumeImage = req.files?.resumeImage?.[0];
     const profileImage = req.files?.profileImage?.[0];
-    if (!profileImage || !aadhaarImage || !panCardImage) {
-      console.log("Required files are missing");
-      throw new Error("Required files are missing");
+
+    // Initialize variables for uploaded images
+    let uploadedAadhaar, uploadedPanCard, uploadedResume, uploadedProfile;
+
+    // Check for each file individually and upload
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+    if (resumeImage) {
+      console.log("Uploading Resume image...");
+      uploadedResume = await uploadOnCloudinary(resumeImage);
+      console.log("Resume image uploaded:", uploadedResume.url);
+    }
+    if (profileImage) {
+      console.log("Uploading Profile image...");
+      uploadedProfile = await uploadOnCloudinary(profileImage);
+      console.log("Profile image uploaded:", uploadedProfile.url);
     }
 
-    console.log("Uploading Profile image...");
-    const uploadedProfile = await uploadOnCloudinary(profileImage);
-    console.log("Profile image uploaded:", uploadedProfile.url);
+    // Prepare update object
+    const updateData = {
+      ...(uploadedAadhaar && { aadhaarImage: uploadedAadhaar.url }),
+      ...(uploadedPanCard && { panCardImage: uploadedPanCard.url }),
+      ...(uploadedResume && { resumeImage: uploadedResume.url }),
+      ...(uploadedProfile && { profileImage: uploadedProfile.url }),
+    };
 
-    console.log("Uploading Aadhaar image...");
-    const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    // Check if all required documents are uploaded
+    if (uploadedAadhaar && uploadedPanCard && uploadedResume) {
+      updateData.isKYCVerified = true; // Set KYC verified status
+    }
 
-    console.log("Uploading Pan Card image...");
-    const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    // Update AGENT
+    const updatedAgent = await Agent.findOneAndUpdate(
+      { _id: AGENTID },
+      { $set: updateData },
+      { new: true }
+    );
 
-    // Save the URLs and other profile details to your database here
-    await Agent.updateOne({});
+    if (!updatedAgent) {
+      return res.status(404).json({ message: "Agent not found" });
+    }
 
-    res.status(201).json({ message: "Agent profile updated successfully" });
+    res.status(201).json({ message: "Agent KYC updated successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
@@ -418,6 +467,7 @@ export const allAgents = async (req, res) => {
       Name: agent.Name,
       isLogin: agent.isLogin,
       position: agent.position,
+      profileImage: agent.profileImage,
     }));
     console.log("Sending allAgents:", allAgents);
     return res.status(200).json({ allAgents });
