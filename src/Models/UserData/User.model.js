@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  profileImage: { type: String },
 });
 
 // Adding a static method to hash password

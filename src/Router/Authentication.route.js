@@ -4,6 +4,8 @@ import {
   resetPassword,
   userLogin,
   allUsers,
+  userProfile,
+  fetchUser,
 } from "../Controller/user.controller.js";
 import {
   agentLogin,
@@ -23,14 +25,25 @@ import {
 import { adminLogin, adminSignup } from "../Controller/admin.controller.js";
 import verifyToken from "../Middlewares/UserAuth.middleware.js";
 import { upload } from "../Middlewares/multer.middleware.js";
+
 const router1 = express.Router();
 
 router1.route("/user/login").post(userLogin);
+router1.route("/user/profile").get(fetchUser);
 router1.route("/user/forgetpassword").post(forgotPass);
 router1.route("/user/resetpassword").post(resetPassword);
 router1.route("/user/signup").post(userSignup);
 router1.route("/user/verifyOTP").post(verifyOTP);
 router1.route("/user/resendOTP").post(resendOTP);
+router1.route("/user/profileImage/:id").post(
+  upload.fields([
+    {
+      name: "profileImage",
+      maxCount: 1,
+    },
+  ]),
+  userProfile
+);
 router1.route("/agent/delete").delete(agentDelete);
 router1.route("/agent/login").post(agentLogin);
 router1.route("/agent/logout").post(agentLogout);

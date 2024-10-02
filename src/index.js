@@ -36,6 +36,10 @@ app.use((err, req, res, next) => {
 // Apply CORS middleware
 app.use(cors(corsOptions));
 app.options("*", cors());
+app.use((req, res, next) => {
+  res.use("Referrer-Policy", "no-referrer-when-downgrade");
+  next();
+});
 
 // Define routes
 app.use("/api/v1/", router1);
