@@ -96,6 +96,18 @@ export const fetchUser = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+export const AgentUsers = async (req, res) => {
+  const { AGENT } = req.body;
+  try {
+    const users = await User.find({
+      referralId: AGENT,
+    });
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching Agent users:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 // Update user profile
 export const userProfile = async (req, res) => {
@@ -258,5 +270,6 @@ export default {
   allUsers,
   resetPassword,
   fetchUser,
+  AgentUsers,
   userProfile,
 };

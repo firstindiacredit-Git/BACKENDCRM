@@ -29,6 +29,8 @@ const uploadOnCloudinary = async (file) => {
       const uploadOptions = {
         resource_type: file.mimetype === "application/pdf" ? "auto" : "image",
         format: file.mimetype === "application/pdf" ? "pdf" : null,
+        // Ensure URLs are returned as HTTPS
+        secure: true,
       };
 
       const stream = cloudinary.uploader.upload_stream(
@@ -38,8 +40,8 @@ const uploadOnCloudinary = async (file) => {
             console.error("Error uploading to Cloudinary:", error.message);
             reject(error);
           } else {
-            console.log("File uploaded successfully:", result.url);
-            resolve(result);
+            console.log("File uploaded successfully:", result.secure_url); // Use secure_url for HTTPS
+            resolve(result); // Resolve with the secure HTTPS URL
           }
         }
       );
@@ -51,4 +53,5 @@ const uploadOnCloudinary = async (file) => {
     throw error;
   }
 };
+
 export { uploadOnCloudinary };

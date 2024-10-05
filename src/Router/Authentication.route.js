@@ -6,6 +6,7 @@ import {
   allUsers,
   userProfile,
   fetchUser,
+  AgentUsers,
 } from "../Controller/user.controller.js";
 import {
   agentLogin,
@@ -47,7 +48,8 @@ router1.route("/user/profileImage/:id").post(
 router1.route("/agent/delete").delete(agentDelete);
 router1.route("/agent/login").post(agentLogin);
 router1.route("/agent/logout").post(agentLogout);
-router1.route("/agent/user").get(allUsers);
+
+router1.route("/agent/user").post(AgentUsers);
 router1.route("/agent/kycstatus/:id").get(agentKYCStatus);
 router1.route("/agent/kyc/:id").post(
   upload.fields([
@@ -71,6 +73,7 @@ router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 router1.route("/admin/signup").post(adminSignup);
 router1.route("/admin/login").post(adminLogin);
+router1.route("/admin/user").get(allUsers);
 
 router1.get("/user/dashboard", verifyToken, (req, res) => {
   res.json(req.user);
