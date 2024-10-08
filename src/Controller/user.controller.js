@@ -260,6 +260,39 @@ export const resetPassword = async (req, res) => {
   }
 };
 
+export const AgentresetUserPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Ensure email and password are provided
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
+    }
+
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user found with this email." });
+    }
+
+    // Hash the new password
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+
+    // Save the updated user with new password
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully." });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
 // Exporting all controller functions
 export default {
   userLogin,
@@ -267,6 +300,7 @@ export default {
   forgotPass,
   allUsers,
   resetPassword,
+  AgentresetUserPassword,
   fetchUser,
   AgentUsers,
   userProfile,

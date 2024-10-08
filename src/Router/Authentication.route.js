@@ -5,6 +5,7 @@ import {
   userLogin,
   allUsers,
   userProfile,
+  AgentresetUserPassword,
   fetchUser,
   AgentUsers,
 } from "../Controller/user.controller.js";
@@ -74,6 +75,7 @@ router1.route("/agent/signup").post(
   agentSignup
 );
 router1.route("/agent/allagents").get(allAgents);
+router1.route("/agent/userPassReset").post(AgentresetUserPassword);
 // router1.route("/agent/:agentId").patch(agentProfile);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
