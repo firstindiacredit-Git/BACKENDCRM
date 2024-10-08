@@ -84,6 +84,37 @@ const verifyToken = (req, res, next) => {
   }
 };
 
+// export const agentLogin = async (req, res) => {
+//   try {
+//     const { referralId, password } = req.body;
+
+//     // Check if agent exists
+//     const agent = await Agent.findOne({ referralId });
+//     if (!agent) {
+//       return res.status(400).json({ message: "Agent does not exist." });
+//     }
+
+//     const isMatch = await agent.comparePassword(password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid credentials" });
+//     }
+
+//     agent.isLogin = true;
+//     await agent.save();
+
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       { referralId, agentId: agent._id },
+//       process.env.JWTSECRET
+//     );
+
+//     res.status(200).json({ token, referralId, agentId: agent._id });
+//     console.log("Agent Logged in Successfully");
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 export const agentLogin = async (req, res) => {
   try {
     const { referralId, password } = req.body;
@@ -94,24 +125,28 @@ export const agentLogin = async (req, res) => {
       return res.status(400).json({ message: "Agent does not exist." });
     }
 
+    // Validate password
     const isMatch = await agent.comparePassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    // Set agent's login status
     agent.isLogin = true;
     await agent.save();
 
-    // Generate JWT token
+    // Generate JWT token with expiry
     const token = jwt.sign(
-      { referralId, agentId: agent._id },
-      process.env.JWTSECRET
+      { referralId, agentId: agent._id }, // Payload
+      process.env.JWT_SECRET // JWT secret key
+      // { expiresIn: "6h" } // Token expiry time (1 hour)
     );
 
+    // Respond with token and agent details
     res.status(200).json({ token, referralId, agentId: agent._id });
     console.log("Agent Logged in Successfully");
   } catch (error) {
-    console.log(error);
+    console.error("Error during agent login:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -469,7 +504,7 @@ export const allAgents = async (req, res) => {
       position: agent.position,
       profileImage: agent.profileImage,
     }));
-    console.log("Sending allAgents:", allAgents);
+    // console.log("Sending allAgents:", allAgents);
     return res.status(200).json({ allAgents });
   } catch (error) {
     console.error("Error fetching agents", error.message);

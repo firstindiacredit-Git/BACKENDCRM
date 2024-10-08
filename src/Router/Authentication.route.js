@@ -23,7 +23,13 @@ import {
   agentKYC,
   agentKYCStatus,
 } from "../Controller/agent.controller.js";
-import { adminLogin, adminSignup } from "../Controller/admin.controller.js";
+import { adminLogin } from "../Controller/admin.controller.js";
+import {
+  adminSignup,
+  allAdmins,
+  superAdminLogin,
+  superAdminSignup,
+} from "../Controller/superAdmin.controller.js";
 import verifyToken from "../Middlewares/UserAuth.middleware.js";
 import { upload } from "../Middlewares/multer.middleware.js";
 
@@ -71,9 +77,15 @@ router1.route("/agent/allagents").get(allAgents);
 // router1.route("/agent/:agentId").patch(agentProfile);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
-router1.route("/admin/signup").post(adminSignup);
+
 router1.route("/admin/login").post(adminLogin);
 router1.route("/admin/user").get(allUsers);
+
+router1.route("/superadmin/admin").get(allAdmins);
+router1.route("/superadmin/user").post(allUsers);
+router1.route("/superAdmin/Adminsignup").post(adminSignup);
+router1.route("/superadmin/Login").post(superAdminLogin);
+router1.route("/superadmin/Signup").post(superAdminSignup);
 
 router1.get("/user/dashboard", verifyToken, (req, res) => {
   res.json(req.user);

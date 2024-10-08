@@ -195,9 +195,7 @@ export const userLogin = async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ email, userId: user._id }, process.env.JWTSECRET, {
-      expiresIn: "7d", // Token validity (e.g., 7 days)
-    });
+    const token = jwt.sign({ email, userId: user._id }, process.env.JWTSECRET);
 
     res
       .status(200)

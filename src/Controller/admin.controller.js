@@ -6,11 +6,6 @@ dotenv.config({
   path: "./env",
 });
 
-const adminExists = async (ID) => {
-  const admin = await Admin.findOne({ ID });
-  return !!admin;
-};
-
 // Middleware for authentication
 const verifyToken = (req, res, next) => {
   const token = req.headers.authorization;
@@ -31,53 +26,36 @@ export const adminLogin = async (req, res) => {
     const { ID, password } = req.body;
 
     // Check if admin exists
-    if (!(await adminExists(ID))) {
+    const admin = await Admin.findOne({ ID });
+    if (!admin) {
       return res
         .status(400)
-        .json({ message: "admin does not exist. Please sign up." });
+        .json({ message: "Admin does not exist. Please sign up." });
     }
 
     // Validate password
-    const admin = await Admin.findOne({ ID });
-
-    // Generate JWT token
-    const token = jwt.sign({ ID }, process.env.JWTSECRET);
-
-    res.status(200).json({ token, ID });
-    console.log("admin Logged in Successfully");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-export const adminSignup = async (req, res) => {
-  try {
-    const { ID, password } = req.body;
-
-    // Check if user already exists
-    if (await adminExists(ID)) {
-      return res.status(400).json({ message: "Admin already exists" });
+    const isMatch = await admin.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // Hash password for security
-    const hashedPassword = await Admin.hashPassword(password);
+    // Generate JWT token with expiry time
+    const token = jwt.sign(
+      { ID: admin.ID, role: "admin" }, // Payload
+      process.env.JWT_SECRET // JWT secret key
+      // { expiresIn: "6h" } // Token expiry time
+    );
 
-    // Create new user
-    const admin = new Admin({
-      ID,
-      password: hashedPassword,
-    });
-
-    await admin.save();
-
-    res.status(201).json({ message: "Admin created successfully" });
+    // Respond with token and admin ID
+    res.status(200).json({ token, ID: admin.ID, role: "admin" });
+    console.log("Admin logged in successfully");
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 export default {
   adminLogin,
   verifyToken,
-  adminSignup,
 };
