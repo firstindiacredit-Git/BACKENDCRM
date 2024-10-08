@@ -138,7 +138,7 @@ export const agentLogin = async (req, res) => {
     // Generate JWT token with expiry
     const token = jwt.sign(
       { referralId, agentId: agent._id }, // Payload
-      process.env.JWT_SECRET // JWT secret key
+      process.env.JWTSECRET // JWT secret key
       // { expiresIn: "6h" } // Token expiry time (1 hour)
     );
 
