@@ -9,6 +9,7 @@ import {
   fetchUser,
   AgentUsers,
 } from "../Controller/user.controller.js";
+
 import {
   agentLogin,
   agentLogout,
@@ -33,6 +34,11 @@ import {
 } from "../Controller/superAdmin.controller.js";
 import verifyToken from "../Middlewares/UserAuth.middleware.js";
 import { upload } from "../Middlewares/multer.middleware.js";
+import {
+  backendLogin,
+  backendLogout,
+  backendSignup,
+} from "../Controller/backend.controller.js";
 
 const router1 = express.Router();
 
@@ -80,7 +86,18 @@ router1.route("/agent/userPassReset").post(AgentresetUserPassword);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 
+router1.route("/backend/login").post(backendLogin);
+router1.route("/backend/logout").post(backendLogout);
+router1.route("/backend/signup").post(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+  ]),
+  backendSignup
+);
+
 router1.route("/admin/login").post(adminLogin);
+
 router1.route("/admin/user").get(allUsers);
 
 router1.route("/superadmin/admin").get(allAdmins);

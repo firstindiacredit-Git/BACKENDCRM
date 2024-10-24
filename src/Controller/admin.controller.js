@@ -33,16 +33,15 @@ export const adminLogin = async (req, res) => {
         .json({ message: "Admin does not exist. Please sign up." });
     }
 
-    // Validate password
-    const isMatch = await admin.comparePassword(password);
-    if (!isMatch) {
+    // Directly compare password (no hashing)
+    if (admin.password !== password) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Generate JWT token with expiry time
     const token = jwt.sign(
       { ID: admin.ID, role: "admin" }, // Payload
-      process.env.JWT_SECRET // JWT secret key
+      process.env.JWTSECRET // JWT secret key
       // { expiresIn: "6h" } // Token expiry time
     );
 

@@ -14,6 +14,10 @@ import {
   getNotifications,
   submitHomeLoan,
   submitBusinessLoan,
+  updateBusinessLoan,
+  updateHomeLoan,
+  updatePersonalLoan,
+  updateCarLoan,
 } from "../Controller/loan.controller.js";
 import { upload } from "../Middlewares/multer.middleware.js";
 
@@ -29,6 +33,14 @@ loanRouter.route("/loan/car").post(
   ]),
   submitCarLoan
 );
+loanRouter.route("/loan/updatecar").put(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "otherDocumentImage", maxCount: 1 },
+  ]),
+  updateCarLoan
+);
 
 //--------------PERSONAL LOAN---------------------------
 
@@ -39,6 +51,14 @@ loanRouter.route("/loan/personal").post(
     { name: "otherDocumentImage", maxCount: 1 },
   ]),
   submitPersonalLoan
+);
+loanRouter.route("/loan/updatepersonal").patch(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "otherDocumentImage", maxCount: 1 },
+  ]),
+  updatePersonalLoan
 );
 
 //------------------HOME LOAN-------------------------
@@ -51,6 +71,14 @@ loanRouter.route("/loan/home").post(
   ]),
   submitHomeLoan
 );
+loanRouter.route("/loan/updatehome").put(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "otherDocumentImage", maxCount: 1 },
+  ]),
+  updateHomeLoan
+);
 
 //------------------BUSINESS LOAN-------------------------
 
@@ -61,6 +89,14 @@ loanRouter.route("/loan/business").post(
     { name: "otherDocumentImage", maxCount: 1 },
   ]),
   submitBusinessLoan
+);
+loanRouter.route("/loan/updatebusiness").put(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "otherDocumentImage", maxCount: 1 },
+  ]),
+  updateBusinessLoan
 );
 
 //--------------LOAN STATUS---------------------------

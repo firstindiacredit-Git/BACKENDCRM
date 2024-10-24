@@ -15,7 +15,6 @@ export const adminSignup = async (req, res) => {
   try {
     const { ID, password, name, phone } = req.body;
 
-    // Check if user already exists
     if (await adminExists(ID)) {
       return res.status(400).json({ message: "Admin already exists" });
     }
@@ -32,6 +31,28 @@ export const adminSignup = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const adminDetail = async (req, res) => {
+  try {
+    const { _id } = req.query;
+
+    let agent = await Admin.findOne({ _id });
+
+    if (!agent) {
+      return res.status(404).json({
+        message: "No Agent found",
+      });
+    }
+
+    res.status(200).json({ agent });
+  } catch (error) {
+    console.error("Error getting agent details", error);
+    return res.status(401).json({
+      message: "Error fetching data of agent",
+      error: error.message,
+    });
   }
 };
 

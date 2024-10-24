@@ -11,7 +11,7 @@ const agentExists = async (referralId) => {
   const agent = await Agent.findOne({ referralId });
   return !!agent;
 };
-
+// ---------------------SUBMIT LOAN-----------------------------
 export const submitCarLoan = async (req, res) => {
   try {
     const {
@@ -601,6 +601,620 @@ export const submitBusinessLoan = async (req, res) => {
   }
 };
 
+// ------------------------------UPDATE LOAN-----------------------------
+
+export const updatePersonalLoan = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      userId,
+      amount,
+      duration,
+      referralId,
+      phone,
+      motherName,
+      fatherName,
+      city,
+      spouseName,
+      maritalStatus,
+      residenceType,
+      currentAddress,
+      cityState,
+      pincode,
+      salary,
+      companyName,
+      totalWorkExperience,
+      yearsInPresentJob,
+      officialEmail,
+      designation,
+      officeAddress,
+      officeLandmark,
+      officeCityState,
+      officePincode,
+      reference1Name,
+      reference1Phone,
+      reference1Address,
+      reference2Name,
+      reference2Phone,
+      reference2Address,
+    } = req.body;
+
+    // Handle duration parsing if present
+    let parsedDuration;
+    if (duration) {
+      if (typeof duration === "string") {
+        try {
+          parsedDuration = JSON.parse(duration);
+        } catch (e) {
+          console.error("Error parsing duration:", e);
+          return res.status(400).json({
+            message: "Invalid duration format",
+            error: e.message,
+          });
+        }
+      } else if (typeof duration === "object") {
+        parsedDuration = duration;
+      }
+    }
+
+    if (parsedDuration && (!parsedDuration.value || !parsedDuration.unit)) {
+      return res.status(400).json({
+        message: "Duration must include both value and unit",
+      });
+    }
+
+    // Handle file uploads (Aadhaar, PAN, Other Documents)
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const otherDocumentImage = req.files?.otherDocumentImage?.[0];
+
+    let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
+
+    if (aadhaarImage) {
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+
+    if (panCardImage) {
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+
+    if (otherDocumentImage) {
+      uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
+      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    }
+
+    // Check if referral ID exists
+    if (referralId && !(await agentExists(referralId))) {
+      return res.status(400).json({
+        message: "Referral ID does not exist. Please check referral ID.",
+      });
+    }
+
+    // Find and update the personal loan record with fields that are present
+    const personalLoan = await PersonalLoan.findByIdAndUpdate(
+      userId,
+      {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(referralId && { referralId }),
+        ...(amount && { amount }),
+        ...(parsedDuration && { duration: parsedDuration }),
+        ...(uploadedAadhaar && { aadhaarImage: uploadedAadhaar?.url }),
+        ...(uploadedPanCard && { panCardImage: uploadedPanCard?.url }),
+        ...(uploadedOtherDocument && {
+          otherDocumentImage: uploadedOtherDocument?.url,
+        }),
+        ...(motherName && { motherName }),
+        ...(fatherName && { fatherName }),
+        ...(city && { city }),
+        ...(spouseName && { spouseName }),
+        ...(maritalStatus && { maritalStatus }),
+        ...(residenceType && { residenceType }),
+        ...(currentAddress && { currentAddress }),
+        ...(cityState && { cityState }),
+        ...(pincode && { pincode }),
+        ...(salary && { salary }),
+        ...(companyName && { companyName }),
+        ...(totalWorkExperience && { totalWorkExperience }),
+        ...(yearsInPresentJob && { yearsInPresentJob }),
+        ...(officialEmail && { officialEmail }),
+        ...(designation && { designation }),
+        ...(officeAddress && { officeAddress }),
+        ...(officeLandmark && { officeLandmark }),
+        ...(officeCityState && { officeCityState }),
+        ...(officePincode && { officePincode }),
+        ...(reference1Name && { reference1Name }),
+        ...(reference1Phone && { reference1Phone }),
+        ...(reference1Address && { reference1Address }),
+        ...(reference2Name && { reference2Name }),
+        ...(reference2Phone && { reference2Phone }),
+        ...(reference2Address && { reference2Address }),
+      },
+      { new: true }
+    );
+
+    if (!personalLoan) {
+      return res.status(404).json({
+        message: "Personal loan not found",
+      });
+    }
+
+    console.log("Personal loan record updated successfully.");
+
+    res.status(200).json({
+      message: "Personal loan application updated successfully",
+      personalLoan,
+    });
+  } catch (error) {
+    console.error("Error updating personal loan:", error.message);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
+  }
+};
+
+export const updateCarLoan = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      userId,
+      amount,
+      duration,
+      referralId,
+      phone,
+      motherName,
+      fatherName,
+      city,
+      spouseName,
+      maritalStatus,
+      residenceType,
+      currentAddress,
+      cityState,
+      pincode,
+      salary,
+      companyName,
+      totalWorkExperience,
+      yearsInPresentJob,
+      officialEmail,
+      designation,
+      officeAddress,
+      officeLandmark,
+      officeCityState,
+      officePincode,
+      reference1Name,
+      reference1Phone,
+      reference1Address,
+      reference2Name,
+      reference2Phone,
+      reference2Address,
+    } = req.body;
+
+    // Handle duration parsing if it's present
+    let parsedDuration;
+    if (duration) {
+      if (typeof duration === "string") {
+        try {
+          parsedDuration = JSON.parse(duration);
+        } catch (e) {
+          console.error("Error parsing duration:", e);
+          return res.status(400).json({
+            message: "Invalid duration format",
+            error: e.message,
+          });
+        }
+      } else if (typeof duration === "object") {
+        parsedDuration = duration;
+      }
+    }
+
+    if (parsedDuration && (!parsedDuration.value || !parsedDuration.unit)) {
+      return res.status(400).json({
+        message: "Duration must include both value and unit",
+      });
+    }
+
+    // Handle optional file uploads (Aadhaar, PAN, Other Documents)
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const otherDocumentImage = req.files?.otherDocumentImage?.[0];
+
+    let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
+
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+
+    if (otherDocumentImage) {
+      console.log("Uploading Other Document image...");
+      uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
+      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    }
+
+    // Check if referral ID exists
+    if (referralId && !(await agentExists(referralId))) {
+      return res.status(400).json({
+        message: "Referral ID does not exist. Please check referral ID.",
+      });
+    }
+
+    // Find the user and update the loan record only with fields that are present
+    const carLoan = await CarLoan.findByIdAndUpdate(
+      userId,
+      {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(referralId && { referralId }),
+        ...(amount && { amount }),
+        ...(parsedDuration && { duration: parsedDuration }),
+        ...(aadhaarImage && { aadhaarImage: uploadedAadhaar?.url }),
+        ...(panCardImage && { panCardImage: uploadedPanCard?.url }),
+        ...(otherDocumentImage && {
+          otherDocumentImage: uploadedOtherDocument?.url,
+        }),
+        ...(motherName && { motherName }),
+        ...(fatherName && { fatherName }),
+        ...(city && { city }),
+        ...(spouseName && { spouseName }),
+        ...(maritalStatus && { maritalStatus }),
+        ...(residenceType && { residenceType }),
+        ...(currentAddress && { currentAddress }),
+        ...(cityState && { cityState }),
+        ...(pincode && { pincode }),
+        ...(salary && { salary }),
+        ...(companyName && { companyName }),
+        ...(totalWorkExperience && { totalWorkExperience }),
+        ...(yearsInPresentJob && { yearsInPresentJob }),
+        ...(officialEmail && { officialEmail }),
+        ...(designation && { designation }),
+        ...(officeAddress && { officeAddress }),
+        ...(officeLandmark && { officeLandmark }),
+        ...(officeCityState && { officeCityState }),
+        ...(officePincode && { officePincode }),
+        ...(reference1Name && { reference1Name }),
+        ...(reference1Phone && { reference1Phone }),
+        ...(reference1Address && { reference1Address }),
+        ...(reference2Name && { reference2Name }),
+        ...(reference2Phone && { reference2Phone }),
+        ...(reference2Address && { reference2Address }),
+      },
+      { new: true }
+    );
+
+    console.log("Car loan record updated successfully.");
+
+    res.status(200).json({
+      message: "Car loan application updated successfully",
+      carLoan,
+    });
+  } catch (error) {
+    console.error("Error updating Car loan:", error.message);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
+  }
+};
+
+export const updateHomeLoan = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      userId,
+      amount,
+      duration,
+      referralId,
+      phone,
+      motherName,
+      fatherName,
+      city,
+      spouseName,
+      maritalStatus,
+      residenceType,
+      currentAddress,
+      cityState,
+      pincode,
+      salary,
+      companyName,
+      totalWorkExperience,
+      yearsInPresentJob,
+      officialEmail,
+      designation,
+      officeAddress,
+      officeLandmark,
+      officeCityState,
+      officePincode,
+      reference1Name,
+      reference1Phone,
+      reference1Address,
+      reference2Name,
+      reference2Phone,
+      reference2Address,
+    } = req.body;
+
+    // Handle duration parsing if it's present
+    let parsedDuration;
+    if (duration) {
+      if (typeof duration === "string") {
+        try {
+          parsedDuration = JSON.parse(duration);
+        } catch (e) {
+          console.error("Error parsing duration:", e);
+          return res.status(400).json({
+            message: "Invalid duration format",
+            error: e.message,
+          });
+        }
+      } else if (typeof duration === "object") {
+        parsedDuration = duration;
+      }
+    }
+
+    if (parsedDuration && (!parsedDuration.value || !parsedDuration.unit)) {
+      return res.status(400).json({
+        message: "Duration must include both value and unit",
+      });
+    }
+
+    // Handle optional file uploads (Aadhaar, PAN, Other Documents)
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const otherDocumentImage = req.files?.otherDocumentImage?.[0];
+
+    let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
+
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+
+    if (otherDocumentImage) {
+      console.log("Uploading Other Document image...");
+      uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
+      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    }
+
+    // Check if referral ID exists
+    if (referralId && !(await agentExists(referralId))) {
+      return res.status(400).json({
+        message: "Referral ID does not exist. Please check referral ID.",
+      });
+    }
+
+    // Find the user and update the loan record only with fields that are present
+    const homeLoan = await HomeLoan.findByIdAndUpdate(
+      userId,
+      {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(referralId && { referralId }),
+        ...(amount && { amount }),
+        ...(parsedDuration && { duration: parsedDuration }),
+        ...(aadhaarImage && { aadhaarImage: uploadedAadhaar?.url }),
+        ...(panCardImage && { panCardImage: uploadedPanCard?.url }),
+        ...(otherDocumentImage && {
+          otherDocumentImage: uploadedOtherDocument?.url,
+        }),
+        ...(motherName && { motherName }),
+        ...(fatherName && { fatherName }),
+        ...(city && { city }),
+        ...(spouseName && { spouseName }),
+        ...(maritalStatus && { maritalStatus }),
+        ...(residenceType && { residenceType }),
+        ...(currentAddress && { currentAddress }),
+        ...(cityState && { cityState }),
+        ...(pincode && { pincode }),
+        ...(salary && { salary }),
+        ...(companyName && { companyName }),
+        ...(totalWorkExperience && { totalWorkExperience }),
+        ...(yearsInPresentJob && { yearsInPresentJob }),
+        ...(officialEmail && { officialEmail }),
+        ...(designation && { designation }),
+        ...(officeAddress && { officeAddress }),
+        ...(officeLandmark && { officeLandmark }),
+        ...(officeCityState && { officeCityState }),
+        ...(officePincode && { officePincode }),
+        ...(reference1Name && { reference1Name }),
+        ...(reference1Phone && { reference1Phone }),
+        ...(reference1Address && { reference1Address }),
+        ...(reference2Name && { reference2Name }),
+        ...(reference2Phone && { reference2Phone }),
+        ...(reference2Address && { reference2Address }),
+      },
+      { new: true }
+    );
+
+    console.log("Home loan record updated successfully.");
+
+    res.status(200).json({
+      message: "Home loan application updated successfully",
+      homeLoan,
+    });
+  } catch (error) {
+    console.error("Error updating Home loan:", error.message);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
+  }
+};
+export const updateBusinessLoan = async (req, res) => {
+  try {
+    const {
+      name,
+      email,
+      userId,
+      amount,
+      duration,
+      referralId,
+      phone,
+      motherName,
+      fatherName,
+      city,
+      spouseName,
+      maritalStatus,
+      residenceType,
+      currentAddress,
+      cityState,
+      pincode,
+      salary,
+      companyName,
+      totalWorkExperience,
+      yearsInPresentJob,
+      officialEmail,
+      designation,
+      officeAddress,
+      officeLandmark,
+      officeCityState,
+      officePincode,
+      reference1Name,
+      reference1Phone,
+      reference1Address,
+      reference2Name,
+      reference2Phone,
+      reference2Address,
+    } = req.body;
+
+    // Handle duration parsing if it's present
+    let parsedDuration;
+    if (duration) {
+      if (typeof duration === "string") {
+        try {
+          parsedDuration = JSON.parse(duration);
+        } catch (e) {
+          console.error("Error parsing duration:", e);
+          return res.status(400).json({
+            message: "Invalid duration format",
+            error: e.message,
+          });
+        }
+      } else if (typeof duration === "object") {
+        parsedDuration = duration;
+      }
+    }
+
+    if (parsedDuration && (!parsedDuration.value || !parsedDuration.unit)) {
+      return res.status(400).json({
+        message: "Duration must include both value and unit",
+      });
+    }
+
+    // Handle optional file uploads (Aadhaar, PAN, Other Documents)
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const otherDocumentImage = req.files?.otherDocumentImage?.[0];
+
+    let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
+
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+
+    if (otherDocumentImage) {
+      console.log("Uploading Other Document image...");
+      uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
+      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    }
+
+    // Check if referral ID exists
+    if (referralId && !(await agentExists(referralId))) {
+      return res.status(400).json({
+        message: "Referral ID does not exist. Please check referral ID.",
+      });
+    }
+
+    // Find the user and update the loan record only with fields that are present
+    const BusinessLoan = await BusinessLoan.findByIdAndUpdate(
+      userId,
+      {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phone && { phone }),
+        ...(referralId && { referralId }),
+        ...(amount && { amount }),
+        ...(parsedDuration && { duration: parsedDuration }),
+        ...(aadhaarImage && { aadhaarImage: uploadedAadhaar?.url }),
+        ...(panCardImage && { panCardImage: uploadedPanCard?.url }),
+        ...(otherDocumentImage && {
+          otherDocumentImage: uploadedOtherDocument?.url,
+        }),
+        ...(motherName && { motherName }),
+        ...(fatherName && { fatherName }),
+        ...(city && { city }),
+        ...(spouseName && { spouseName }),
+        ...(maritalStatus && { maritalStatus }),
+        ...(residenceType && { residenceType }),
+        ...(currentAddress && { currentAddress }),
+        ...(cityState && { cityState }),
+        ...(pincode && { pincode }),
+        ...(salary && { salary }),
+        ...(companyName && { companyName }),
+        ...(totalWorkExperience && { totalWorkExperience }),
+        ...(yearsInPresentJob && { yearsInPresentJob }),
+        ...(officialEmail && { officialEmail }),
+        ...(designation && { designation }),
+        ...(officeAddress && { officeAddress }),
+        ...(officeLandmark && { officeLandmark }),
+        ...(officeCityState && { officeCityState }),
+        ...(officePincode && { officePincode }),
+        ...(reference1Name && { reference1Name }),
+        ...(reference1Phone && { reference1Phone }),
+        ...(reference1Address && { reference1Address }),
+        ...(reference2Name && { reference2Name }),
+        ...(reference2Phone && { reference2Phone }),
+        ...(reference2Address && { reference2Address }),
+      },
+      { new: true }
+    );
+
+    console.log("Business loan record updated successfully.");
+
+    res.status(200).json({
+      message: "Business loan application updated successfully",
+      homeLoan,
+    });
+  } catch (error) {
+    console.error("Error updating Business loan:", error.message);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
+  }
+};
+
+// ----------------------------OTHER LOAN THINGS----------------------------
+
 export const getLoanStatus = async (req, res) => {
   const { userId } = req.query;
   try {
@@ -638,7 +1252,7 @@ export const getLoanStatus = async (req, res) => {
 
 export const getAllLoanList = async (req, res) => {
   try {
-    console.log(`Fetching loans for all loans`);
+    // console.log(`Fetching loans for all loans`);
     const carLoans = await CarLoan.find({});
     const homeLoans = await HomeLoan.find({});
     const personalLoans = await PersonalLoan.find({});
@@ -669,7 +1283,7 @@ export const getAllLoanList = async (req, res) => {
 };
 export const getAllCheckedLoanList = async (req, res) => {
   try {
-    console.log(`Fetching loans for all loans`);
+    // console.log(`Fetching loans for all loans`);
     const carLoans = await CarLoan.find({
       $or: [{ isApproved: true }, { isRejected: true }],
     });
@@ -709,7 +1323,7 @@ export const getAllCheckedLoanList = async (req, res) => {
 
 export const getAllPendingLoanList = async (req, res) => {
   try {
-    console.log(`Fetching all Pending loans`);
+    // console.log(`Fetching all Pending loans`);
     const carLoans = await CarLoan.find({
       isApproved: false,
       isRejected: false,
