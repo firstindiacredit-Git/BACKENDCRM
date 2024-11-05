@@ -172,7 +172,7 @@ export const agentLogout = async (req, res) => {
     agent.isLogin = false; // Set to boolean false for logout
     await agent.save();
 
-    console.log("Agent updated:", agent);
+    // console.log("Agent updated:", agent);
     res.status(200).json({
       message: "Agent logged out successfully",
       isLogin: agent.isLogin,
@@ -190,22 +190,19 @@ export const agentSignup = async (req, res) => {
     const { Name, password, referralId, Phone, position } = req.body;
     const aadhaarImage = req.files?.aadhaarImage?.[0];
     const panCardImage = req.files?.panCardImage?.[0];
+    let uploadedAadhaar;
+    let uploadedPanCard;
 
-    if (!aadhaarImage) {
-      console.log("Adhaar files not found");
-      throw new Error("Adhaar files not found");
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
-    if (!panCardImage) {
-      console.log("panCardImage files not found");
-      throw new Error("panCardImage files not found");
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      const uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
-    console.log("Uploading Aadhaar image...");
-    const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
-
-    console.log("Uploading Pan Card image...");
-    const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
 
     // Check if user already exists
     if (await agentExists(referralId)) {
@@ -222,8 +219,8 @@ export const agentSignup = async (req, res) => {
       password: hashedPassword,
       Phone,
       position,
-      aadhaarImage: uploadedAadhaar.url,
-      panCardImage: uploadedPanCard.url,
+      aadhaarImage: uploadedAadhaar?.url,
+      panCardImage: uploadedPanCard?.url,
     });
 
     await agent.save();
@@ -259,9 +256,14 @@ export const agentKYC = async (req, res) => {
     const panCardImage = req.files?.panCardImage?.[0];
     const resumeImage = req.files?.resumeImage?.[0];
     const profileImage = req.files?.profileImage?.[0];
+    const otherImage = req.files?.otherImage?.[0];
 
     // Initialize variables for uploaded images
-    let uploadedAadhaar, uploadedPanCard, uploadedResume, uploadedProfile;
+    let uploadedAadhaar,
+      uploadedPanCard,
+      uploadedResume,
+      uploadedProfile,
+      uploadedOther;
 
     // Check for each file individually and upload
     if (aadhaarImage) {
@@ -284,6 +286,11 @@ export const agentKYC = async (req, res) => {
       uploadedProfile = await uploadOnCloudinary(profileImage);
       console.log("Profile image uploaded:", uploadedProfile.url);
     }
+    if (otherImage) {
+      console.log("Uploading Other image...");
+      uploadedOther = await uploadOnCloudinary(otherImage);
+      console.log("Other image uploaded:", uploadedOther.url);
+    }
 
     // Prepare update object
     const updateData = {
@@ -291,6 +298,7 @@ export const agentKYC = async (req, res) => {
       ...(uploadedPanCard && { panCardImage: uploadedPanCard.url }),
       ...(uploadedResume && { resumeImage: uploadedResume.url }),
       ...(uploadedProfile && { profileImage: uploadedProfile.url }),
+      ...(uploadedOther && { otherImage: uploadedOther.url }),
     };
 
     // Check if all required documents are uploaded
@@ -315,6 +323,69 @@ export const agentKYC = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+// export const updateAgentKYC = async (req, res) => {
+//   try {
+//     const { AGENTID } = req.body;
+//     const aadhaarImage = req.files?.aadhaarImage?.[0];
+//     const panCardImage = req.files?.panCardImage?.[0];
+//     const resumeImage = req.files?.resumeImage?.[0];
+//     const profileImage = req.files?.profileImage?.[0];
+
+//     // Initialize variables for uploaded images
+//     let uploadedAadhaar, uploadedPanCard, uploadedResume, uploadedProfile;
+
+//     // Check for each file individually and upload
+//     if (aadhaarImage) {
+//       console.log("Uploading Aadhaar image...");
+//       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+//       console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+//     }
+//     if (panCardImage) {
+//       console.log("Uploading Pan Card image...");
+//       uploadedPanCard = await uploadOnCloudinary(panCardImage);
+//       console.log("Pan Card image uploaded:", uploadedPanCard.url);
+//     }
+//     if (resumeImage) {
+//       console.log("Uploading Resume image...");
+//       uploadedResume = await uploadOnCloudinary(resumeImage);
+//       console.log("Resume image uploaded:", uploadedResume.url);
+//     }
+//     if (profileImage) {
+//       console.log("Uploading Profile image...");
+//       uploadedProfile = await uploadOnCloudinary(profileImage);
+//       console.log("Profile image uploaded:", uploadedProfile.url);
+//     }
+
+//     // Prepare update object
+//     const updateData = {
+//       ...(uploadedAadhaar && { aadhaarImage: uploadedAadhaar.url }),
+//       ...(uploadedPanCard && { panCardImage: uploadedPanCard.url }),
+//       ...(uploadedResume && { resumeImage: uploadedResume.url }),
+//       ...(uploadedProfile && { profileImage: uploadedProfile.url }),
+//     };
+
+//     // Check if all required documents are uploaded
+//     if (uploadedAadhaar && uploadedPanCard && uploadedResume) {
+//       updateData.isKYCVerified = true; // Set KYC verified status
+//     }
+
+//     // Update AGENT
+//     const updatedAgent = await Agent.findOneAndUpdate(
+//       { _id: AGENTID },
+//       { $set: updateData },
+//       { new: true }
+//     );
+
+//     if (!updatedAgent) {
+//       return res.status(404).json({ message: "Agent not found" });
+//     }
+
+//     res.status(201).json({ message: "Agent KYC updated successfully" });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
 export const agentDelete = async (req, res) => {
   const agentId = req.query._id;

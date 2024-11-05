@@ -70,6 +70,7 @@ router1.route("/agent/kyc/:id").post(
     { name: "panCardImage", maxCount: 1 },
     { name: "resumeImage", maxCount: 1 },
     { name: "profileImage", maxCount: 1 },
+    { name: "otherImage", maxCount: 1 },
   ]),
   agentKYC
 );
