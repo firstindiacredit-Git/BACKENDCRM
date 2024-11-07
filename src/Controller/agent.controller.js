@@ -8,6 +8,7 @@ import otpGenerator from "otp-generator";
 import { signupSchema } from "../Middlewares/ValidationSchema.js";
 import bcrypt from "bcrypt";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import { io } from "../index.js";
 
 dotenv.config({
   path: "./env",
@@ -135,6 +136,11 @@ export const agentLogin = async (req, res) => {
     agent.isLogin = true;
     await agent.save();
 
+    io.emit("islogin", {
+      isLogin: true,
+      agentId: agent._id,
+    });
+
     // Generate JWT token with expiry
     const token = jwt.sign(
       { referralId, agentId: agent._id }, // Payload
@@ -171,6 +177,10 @@ export const agentLogout = async (req, res) => {
     // Update the agent's login status
     agent.isLogin = false; // Set to boolean false for logout
     await agent.save();
+    io.emit("notlogin", {
+      isLogin: false,
+      agentId: agent._id,
+    });
 
     // console.log("Agent updated:", agent);
     res.status(200).json({

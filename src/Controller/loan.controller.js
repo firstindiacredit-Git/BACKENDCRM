@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../utils/Cloudinary.js";
 import Agent from "../Models/EmployeeData/Employee.model.js";
 import BusinessLoan from "../Models/LoanType/BusinessLoan.model.js";
 import nodemailer from "nodemailer";
+import { io } from "../index.js";
 
 const agentExists = async (referralId) => {
   const agent = await Agent.findOne({ referralId });
@@ -1661,6 +1662,15 @@ export const approveLoan = async (req, res) => {
       !businessUpdate.nModified
     ) {
       await sendApprovedNotification(email, loanId);
+
+      // Emit notification via Socket.IO
+      io.emit("loanStatus", {
+        type: "approved",
+        loanId,
+        email,
+        message: "Loan has been approved",
+      });
+
       return res.status(200).json({ message: "Loan approved successfully" });
     } else {
       return res.status(404).json({ message: "Loan not found" });
@@ -1700,6 +1710,15 @@ export const rejectLoan = async (req, res) => {
       !businessUpdate.nModified
     ) {
       await sendRejectedNotification(email, loanId);
+
+      // Emit notification via Socket.IO
+      io.emit("loanStatus", {
+        type: "rejected",
+        loanId,
+        email,
+        message: `Loan has been rejected: ${message}`,
+      });
+
       return res.status(200).json({
         message: "Loan rejected successfully",
         data: message,
