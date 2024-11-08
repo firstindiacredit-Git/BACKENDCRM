@@ -51,7 +51,7 @@ app.use("/api/v1/", router1);
 app.use("/api/v2/", router);
 
 app.get("/", (req, res) => {
-  res.status(200).send("Welcome");
+  res.status(200).send("Welcome FIC");
 });
 
 // Connect to the database and start the server
