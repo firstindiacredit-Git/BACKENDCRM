@@ -28,23 +28,43 @@ const sendResetPasswordEmail = async (email, resetLink) => {
     to: email,
     subject: "Reset Your Password",
     html: `
-      <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-        <div style="margin:50px auto;width:70%;padding:20px 0">
-          <div style="border-bottom:1px solid #eee">
-            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">FIC</a>
-          </div>
-          <p style="font-size:1.1em">Hi,</p>
-          <p>Click the link below to reset your password. The link is valid for 1 hour.</p>
-          <a href="${resetLink}" style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;text-decoration: none;">Reset Password</a>
-          <p style="font-size:0.9em;">Regards,<br />First India Credit</p>
-          <hr style="border:none;border-top:1px solid #eee" />
-          <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-            <p>FIC Inc</p>
-            <p>NEW DELHI</p>
-            <p>INDIA</p>
-          </div>
-        </div>
-      </div>
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+  <div style="text-align: center; padding: 20px 0;">
+    <img src="https://firstindiacredit.com/wp-content/uploads/2023/12/Untitled-350-x-80-px-350-x-75-px-350-x-68-px-1.png" alt="FIC Logo" style="max-width: 200px; height: auto;">
+  </div>
+  
+  <div style="padding: 20px; background-color: #ffffff; border-radius: 8px;">
+    <h2 style="color: #2C3345; margin-bottom: 20px; font-size: 24px;">Password Reset Request</h2>
+    
+    <p style="color: #4A5568; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+      Hello,
+    </p>
+    
+    <p style="color: #4A5568; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+      We received a request to reset your password for your First India Credit account. Click the button below to reset it. This link is valid for 1 hour.
+    </p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+      <a href=${resetLink} style="background-color: #00466a; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 4px; font-weight: 600; display: inline-block; font-size: 16px;">Reset Password</a>
+    </div>
+    
+    <p style="color: #718096; font-size: 14px; line-height: 1.6; margin-top: 25px;">
+      If you didn't request this password reset, please ignore this email or contact our support team if you have concerns.
+    </p>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #E2E8F0;">
+      <p style="color: #4A5568; font-size: 16px; margin-bottom: 10px;">Best regards,</p>
+      <p style="color: #2D3748; font-weight: 600; font-size: 16px;">First India Credit Team</p>
+    </div>
+  </div>
+  
+  <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #E2E8F0; text-align: center;">
+    <p style="color: #718096; font-size: 14px; margin-bottom: 5px;">First India Credit</p>
+    <p style="color: #718096; font-size: 14px; margin-bottom: 5px;">New Delhi, India</p>
+    <p style="color: #718096; font-size: 12px; margin-top: 15px;">© ${new Date().getFullYear()} First India Credit. All rights reserved.</p>
+  </div>
+</div>
+
     `,
   };
 
