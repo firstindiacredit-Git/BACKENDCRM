@@ -31,7 +31,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }} # Ensure the private key is added to GitHub Secrets
           script: |
             cd ~/BACKENDCRM
-            git pull origin master
+            git pull
             pm2 restart all
 
       # Set environment variables on the server (only if .env doesn't already exist)
