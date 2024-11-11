@@ -35,6 +35,8 @@ import {
 import verifyToken from "../Middlewares/UserAuth.middleware.js";
 import { upload } from "../Middlewares/multer.middleware.js";
 import {
+  allBackends,
+  backendDetail,
   backendLogin,
   backendLogout,
   backendSignup,
@@ -82,11 +84,15 @@ router1.route("/agent/signup").post(
   agentSignup
 );
 router1.route("/agent/allagents").get(allAgents);
+
 router1.route("/agent/userPassReset").post(AgentresetUserPassword);
 // router1.route("/agent/:agentId").patch(agentProfile);
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 
+router1.route("/backend/delete").delete(backendDetail);
+router1.route("/backend/backendetail").get(backendDetail);
+router1.route("/backend/allbackends").get(allBackends);
 router1.route("/backend/login").post(backendLogin);
 router1.route("/backend/logout").post(backendLogout);
 router1.route("/backend/signup").post(

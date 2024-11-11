@@ -68,10 +68,10 @@ dbConnect()
 
 // Handle Socket.IO connection
 io.on("connection", (socket) => {
-  console.log("A client connected:", socket.id);
+  // console.log("A client connected:", socket.id);
 
   socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    // console.log("Client disconnected:", socket.id);
   });
 });
 

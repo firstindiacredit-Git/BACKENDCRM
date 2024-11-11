@@ -114,6 +114,70 @@ export const backendSignup = async (req, res) => {
   }
 };
 
+export const backendDetail = async (req, res) => {
+  try {
+    const { _id } = req.query;
+
+    let backend = await Backend.findOne({ _id });
+
+    if (!backend) {
+      return res.status(404).json({
+        message: "No Agent found",
+      });
+    }
+
+    res.status(200).json({ backend });
+  } catch (error) {
+    console.error("Error getting backend details", error);
+    return res.status(401).json({
+      message: "Error fetching data of backend",
+      error: error.message,
+    });
+  }
+};
+
+export const backendDelete = async (req, res) => {
+  const backendId = req.query._id;
+  try {
+    const backendDelete = await Backend.findByIdAndDelete(backendId);
+
+    if (!backendDelete) {
+      return res.status(404).json({
+        message: "Backend no found",
+      });
+    }
+    return res.status(200).json({
+      message: "backend Deleted",
+      agent: backendDelete,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "an error occure while deleting agent",
+    });
+  }
+};
+
+export const allBackends = async (req, res) => {
+  try {
+    const backend = await Backend.find({});
+    const allBackend = backend.map((backend) => ({
+      _id: backend._id,
+      referralId: backend.referralId,
+      Name: backend.Name,
+      isLogin: backend.isLogin,
+      position: backend.position,
+    }));
+    // console.log("Sending allBackend:", allBackend);
+    return res.status(200).json({ allBackend });
+  } catch (error) {
+    console.error("Error fetching backend", error.message);
+    return res.status(500).json({
+      message: "Error fetching backendList",
+      error: error.message,
+    });
+  }
+};
+
 export const backendLogout = async (req, res) => {
   try {
     const { referralId } = req.body;
