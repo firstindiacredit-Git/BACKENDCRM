@@ -14,7 +14,6 @@ import {
   agentLogin,
   agentLogout,
   agentSignup,
-  // agentProfile,
   userSignup,
   verifyOTP,
   allAgents,
@@ -37,6 +36,9 @@ import { upload } from "../Middlewares/multer.middleware.js";
 import {
   allBackends,
   backendDetail,
+  backendDelete,
+  backendKYC,
+  backendKYCStatus,
   backendLogin,
   backendLogout,
   backendSignup,
@@ -51,6 +53,9 @@ router1.route("/user/resetpassword").post(resetPassword);
 router1.route("/user/signup").post(userSignup);
 router1.route("/user/verifyOTP").post(verifyOTP);
 router1.route("/user/resendOTP").post(resendOTP);
+router1.get("/user/dashboard", verifyToken, (req, res) => {
+  res.json(req.user);
+});
 router1.route("/user/profileImage/:id").post(
   upload.fields([
     {
@@ -60,6 +65,9 @@ router1.route("/user/profileImage/:id").post(
   ]),
   userProfile
 );
+
+// -------------------------------AGENT---------------------------------------//
+
 router1.route("/agent/delete").delete(agentDelete);
 router1.route("/agent/login").post(agentLogin);
 router1.route("/agent/logout").post(agentLogout);
@@ -86,11 +94,26 @@ router1.route("/agent/signup").post(
 router1.route("/agent/allagents").get(allAgents);
 
 router1.route("/agent/userPassReset").post(AgentresetUserPassword);
-// router1.route("/agent/:agentId").patch(agentProfile);
+router1.get("/agent/dashboard", verifyToken, (req, res) => {
+  res.json(req.user);
+});
 router1.route("/agent/allagentsRef").get(allAgentsRef);
 router1.route("/agent/agentdetail").get(agentDetail);
 
-router1.route("/backend/delete").delete(backendDetail);
+// -------------------------------BACKEND---------------------------------------//
+
+router1.route("/backend/kycstatus/:id").get(backendKYCStatus);
+router1.route("/backend/kyc/:id").post(
+  upload.fields([
+    { name: "aadhaarImage", maxCount: 1 },
+    { name: "panCardImage", maxCount: 1 },
+    { name: "resumeImage", maxCount: 1 },
+    { name: "profileImage", maxCount: 1 },
+    { name: "otherImage", maxCount: 1 },
+  ]),
+  backendKYC
+);
+router1.route("/backend/delete").delete(backendDelete);
 router1.route("/backend/backendetail").get(backendDetail);
 router1.route("/backend/allbackends").get(allBackends);
 router1.route("/backend/login").post(backendLogin);
@@ -103,24 +126,20 @@ router1.route("/backend/signup").post(
   backendSignup
 );
 
-router1.route("/admin/login").post(adminLogin);
+// -------------------------------ADMIN---------------------------------------//
 
+router1.route("/admin/login").post(adminLogin);
 router1.route("/admin/user").get(allUsers);
+router1.get("/admin/dashboard", verifyToken, (req, res) => {
+  res.json(req.user);
+});
+
+// -------------------------------SUPERADMIN---------------------------------------//
 
 router1.route("/superadmin/admin").get(allAdmins);
 router1.route("/superadmin/user").post(allUsers);
 router1.route("/superAdmin/Adminsignup").post(adminSignup);
 router1.route("/superadmin/Login").post(superAdminLogin);
 router1.route("/superadmin/Signup").post(superAdminSignup);
-
-router1.get("/user/dashboard", verifyToken, (req, res) => {
-  res.json(req.user);
-});
-router1.get("/agent/dashboard", verifyToken, (req, res) => {
-  res.json(req.user);
-});
-router1.get("/admin/dashboard", verifyToken, (req, res) => {
-  res.json(req.user);
-});
 
 export default router1;

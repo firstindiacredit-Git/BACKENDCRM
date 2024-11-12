@@ -343,7 +343,6 @@ export const agentDelete = async (req, res) => {
       return res.status(404).json({
         message: "Agent no found",
       });
-      // asd
     }
     return res.status(200).json({
       message: "Agent Deleted",

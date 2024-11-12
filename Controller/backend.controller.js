@@ -146,9 +146,9 @@ export const backendDelete = async (req, res) => {
         message: "Backend no found",
       });
     }
+    console.log("Backend Deleted");
     return res.status(200).json({
       message: "backend Deleted",
-      agent: backendDelete,
     });
   } catch (error) {
     return res.status(500).json({
@@ -166,6 +166,7 @@ export const allBackends = async (req, res) => {
       Name: backend.Name,
       isLogin: backend.isLogin,
       position: backend.position,
+      profileImage: backend.profileImage,
     }));
     // console.log("Sending allBackend:", allBackend);
     return res.status(200).json({ allBackend });
@@ -210,8 +211,101 @@ export const backendLogout = async (req, res) => {
   }
 };
 
+export const backendKYCStatus = async (req, res) => {
+  try {
+    const { id: BACKENDID } = req.params; // Access AGENTID from params
+
+    // console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
+
+    const agent = await Backend.findOne({ _id: BACKENDID }); // Use AGENTID directly
+    if (!agent) {
+      return res.status(404).json({ message: "Backend not found" });
+    }
+    res.status(200).json({ isKYCVerified: agent.isKYCVerified });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const backendKYC = async (req, res) => {
+  try {
+    const { BACKENDID } = req.body;
+    const aadhaarImage = req.files?.aadhaarImage?.[0];
+    const panCardImage = req.files?.panCardImage?.[0];
+    const resumeImage = req.files?.resumeImage?.[0];
+    const profileImage = req.files?.profileImage?.[0];
+    // const otherImage = req.files?.otherImage?.[0];
+
+    // Initialize variables for uploaded images
+    let uploadedAadhaar, uploadedPanCard, uploadedResume, uploadedProfile;
+    // uploadedOther;
+
+    // Check for each file individually and upload
+    if (aadhaarImage) {
+      console.log("Uploading Aadhaar image...");
+      uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
+      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    }
+    if (panCardImage) {
+      console.log("Uploading Pan Card image...");
+      uploadedPanCard = await uploadOnCloudinary(panCardImage);
+      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    }
+    if (resumeImage) {
+      console.log("Uploading Resume image...");
+      uploadedResume = await uploadOnCloudinary(resumeImage);
+      console.log("Resume image uploaded:", uploadedResume.url);
+    }
+    if (profileImage) {
+      console.log("Uploading Profile image...");
+      uploadedProfile = await uploadOnCloudinary(profileImage);
+      console.log("Profile image uploaded:", uploadedProfile.url);
+    }
+    // if (otherImage) {
+    //   console.log("Uploading Other image...");
+    //   uploadedOther = await uploadOnCloudinary(otherImage);
+    //   console.log("Other image uploaded:", uploadedOther.url);
+    // }
+
+    // Prepare update object
+    const updateData = {
+      ...(uploadedAadhaar && { aadhaarImage: uploadedAadhaar.url }),
+      ...(uploadedPanCard && { panCardImage: uploadedPanCard.url }),
+      ...(uploadedResume && { resumeImage: uploadedResume.url }),
+      ...(uploadedProfile && { profileImage: uploadedProfile.url }),
+      // ...(uploadedOther && { otherImage: uploadedOther.url }),
+    };
+
+    // Check if all required documents are uploaded
+    if (uploadedAadhaar && uploadedPanCard && uploadedResume) {
+      updateData.isKYCVerified = true; // Set KYC verified status
+    }
+
+    // Update AGENT
+    const updatedAgent = await Backend.findOneAndUpdate(
+      { _id: BACKENDID },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedAgent) {
+      return res.status(404).json({ message: "Backend not found" });
+    }
+
+    res.status(201).json({ message: "Backend KYC updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export default {
   backendLogin,
   verifyToken,
   backendSignup,
+  backendDelete,
+  backendDetail,
+  backendKYC,
+  backendKYCStatus,
 };
