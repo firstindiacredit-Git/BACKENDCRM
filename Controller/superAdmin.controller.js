@@ -29,7 +29,7 @@ export const adminSignup = async (req, res) => {
 
     res.status(201).json({ message: "Admin created successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -76,7 +76,7 @@ export const superAdminSignup = async (req, res) => {
 
     res.status(201).json({ message: "Super Admin created successfully" });
   } catch (error) {
-    console.log("Error during Super Admin signup:", error);
+    //console.log("Error during Super Admin signup:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -110,7 +110,7 @@ export const superAdminLogin = async (req, res) => {
     // Return the token in response
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -149,7 +149,7 @@ export const allAdmins = [
 
       res.status(200).json({ message: "All Admins", admins });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: "Internal server error" });
     }
   },

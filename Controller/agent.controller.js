@@ -58,15 +58,15 @@ const sendOTP = async (email, otp) => {
 
 const agentExists = async (referralId) => {
   const agent = await Agent.findOne({ referralId });
-  console.log(!!agent);
-  console.log(referralId);
+  //console.log(!!agent);
+  //console.log(referralId);
   return !!agent;
 };
 
 const userExists = async (email, phone) => {
   const user = await User.findOne({ email, phone });
-  console.log(!!user);
-  console.log(email, phone);
+  //console.log(!!user);
+  //console.log(email, phone);
   return !!user;
 };
 
@@ -110,9 +110,9 @@ const verifyToken = (req, res, next) => {
 //     );
 
 //     res.status(200).json({ token, referralId, agentId: agent._id });
-//     console.log("Agent Logged in Successfully");
+//     //console.log("Agent Logged in Successfully");
 //   } catch (error) {
-//     console.log(error);
+//     console.error(error);
 //     res.status(500).json({ message: "Internal server error" });
 //   }
 // };
@@ -150,7 +150,7 @@ export const agentLogin = async (req, res) => {
 
     // Respond with token and agent details
     res.status(200).json({ token, referralId, agentId: agent._id });
-    console.log("Agent Logged in Successfully");
+    //console.log("Agent Logged in Successfully");
   } catch (error) {
     console.error("Error during agent login:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -165,7 +165,7 @@ export const agentLogout = async (req, res) => {
       return res.status(400).json({ message: "Referral ID is required" });
     }
 
-    console.log("Logging out agent:", referralId);
+    //console.log("Logging out agent:", referralId);
 
     // Find the agent by referralId (not by ObjectId)
     const agent = await Agent.findOne({ referralId });
@@ -182,7 +182,7 @@ export const agentLogout = async (req, res) => {
       agentId: agent._id,
     });
 
-    // console.log("Agent updated:", agent);
+    // //console.log("Agent updated:", agent);
     res.status(200).json({
       message: "Agent logged out successfully",
       isLogin: agent.isLogin,
@@ -204,14 +204,14 @@ export const agentSignup = async (req, res) => {
     let uploadedPanCard;
 
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     // Check if user already exists
@@ -237,7 +237,7 @@ export const agentSignup = async (req, res) => {
 
     res.status(201).json({ message: "Agent created successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -246,7 +246,7 @@ export const agentKYCStatus = async (req, res) => {
   try {
     const { id: AGENTID } = req.params; // Access AGENTID from params
 
-    // console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
+    // //console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
 
     const agent = await Agent.findOne({ _id: AGENTID }); // Use AGENTID directly
     if (!agent) {
@@ -254,7 +254,7 @@ export const agentKYCStatus = async (req, res) => {
     }
     res.status(200).json({ isKYCVerified: agent.isKYCVerified });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -277,29 +277,29 @@ export const agentKYC = async (req, res) => {
 
     // Check for each file individually and upload
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
     if (resumeImage) {
-      console.log("Uploading Resume image...");
+      //console.log("Uploading Resume image...");
       uploadedResume = await uploadOnCloudinary(resumeImage);
-      console.log("Resume image uploaded:", uploadedResume.url);
+      //console.log("Resume image uploaded:", uploadedResume.url);
     }
     if (profileImage) {
-      console.log("Uploading Profile image...");
+      //console.log("Uploading Profile image...");
       uploadedProfile = await uploadOnCloudinary(profileImage);
-      console.log("Profile image uploaded:", uploadedProfile.url);
+      //console.log("Profile image uploaded:", uploadedProfile.url);
     }
     if (otherImage) {
-      console.log("Uploading Other image...");
+      //console.log("Uploading Other image...");
       uploadedOther = await uploadOnCloudinary(otherImage);
-      console.log("Other image uploaded:", uploadedOther.url);
+      //console.log("Other image uploaded:", uploadedOther.url);
     }
 
     // Prepare update object
@@ -329,7 +329,7 @@ export const agentKYC = async (req, res) => {
 
     res.status(201).json({ message: "Agent KYC updated successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -522,7 +522,7 @@ export const allAgents = async (req, res) => {
       position: agent.position,
       profileImage: agent.profileImage,
     }));
-    // console.log("Sending allAgents:", allAgents);
+    // //console.log("Sending allAgents:", allAgents);
     return res.status(200).json({ allAgents });
   } catch (error) {
     console.error("Error fetching agents", error.message);
@@ -535,12 +535,12 @@ export const allAgents = async (req, res) => {
 export const allAgentsRef = async (req, res) => {
   try {
     const agents = await Agent.find({});
-    // console.log("Fetched agents:", agents);
+    // //console.log("Fetched agents:", agents);
     const allAgentsRef = agents.map((agent) => ({
       referralId: agent.referralId,
       Name: agent.Name,
     }));
-    console.log("Sending allAgents:", allAgentsRef);
+    //console.log("Sending allAgents:", allAgentsRef);
     return res.status(200).json({ allAgentsRef });
   } catch (error) {
     console.error("Error fetching agents", error.message);

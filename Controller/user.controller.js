@@ -140,9 +140,9 @@ export const userProfile = async (req, res) => {
     let uploadedProfile;
 
     if (profileImage) {
-      console.log("Uploading Profile image...");
+      //console.log("Uploading Profile image...");
       uploadedProfile = await uploadOnCloudinary(profileImage);
-      console.log("Profile image uploaded:", uploadedProfile.url);
+      //console.log("Profile image uploaded:", uploadedProfile.url);
     }
 
     // Prepare update object
@@ -220,7 +220,7 @@ export const userLogin = async (req, res) => {
     res
       .status(200)
       .json({ token, name: user.firstName, userId: user._id, email });
-    console.log("User Logged in Successfully");
+    //console.log("User Logged in Successfully");
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "Internal server error" });

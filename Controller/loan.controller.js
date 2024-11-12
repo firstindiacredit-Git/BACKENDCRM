@@ -56,15 +56,15 @@ export const submitCarLoan = async (req, res) => {
     const otherDocumentImage = req.files?.otherDocumentImage?.[0];
 
     if (!aadhaarImage) {
-      console.log("Adhaar files not found");
+      //console.log("Adhaar files not found");
       throw new Error("Adhaar files not found");
     }
     if (!panCardImage) {
-      console.log("panCardImage files not found");
+      //console.log("panCardImage files not found");
       throw new Error("panCardImage files not found");
     }
     if (!otherDocumentImage) {
-      console.log("otherDocumentImage files not found");
+      //console.log("otherDocumentImage files not found");
       throw new Error("otherDocumentImage files not found");
     }
 
@@ -74,21 +74,21 @@ export const submitCarLoan = async (req, res) => {
       });
     }
 
-    console.log("Uploading Aadhaar image...");
+    //console.log("Uploading Aadhaar image...");
     const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
 
-    console.log("Uploading Pan Card image...");
+    //console.log("Uploading Pan Card image...");
     const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    //console.log("Pan Card image uploaded:", uploadedPanCard.url);
 
-    console.log("Uploading Other Document image...");
+    //console.log("Uploading Other Document image...");
     const uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-    console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
 
     const user = await User.findById(userId);
 
-    console.log("Creating car loan record in the database...");
+    //console.log("Creating car loan record in the database...");
     const carLoan = await CarLoan.create({
       name,
       email,
@@ -128,7 +128,7 @@ export const submitCarLoan = async (req, res) => {
       reference2Phone,
       reference2Address,
     });
-    console.log("Car loan record created successfully.");
+    //console.log("Car loan record created successfully.");
 
     res.status(200).json({
       message: "Car loan application submitted successfully",
@@ -209,15 +209,15 @@ export const submitPersonalLoan = async (req, res) => {
     const otherDocumentImage = req.files?.otherDocumentImage?.[0];
 
     if (!aadhaarImage) {
-      console.log("Adhaar files not found");
+      //console.log("Adhaar files not found");
       throw new Error("Adhaar files not found");
     }
     if (!panCardImage) {
-      console.log("panCardImage files not found");
+      //console.log("panCardImage files not found");
       throw new Error("panCardImage files not found");
     }
     if (!otherDocumentImage) {
-      console.log("otherDocumentImage files not found");
+      //console.log("otherDocumentImage files not found");
       throw new Error("otherDocumentImage files not found");
     }
 
@@ -227,21 +227,21 @@ export const submitPersonalLoan = async (req, res) => {
       });
     }
 
-    console.log("Uploading Aadhaar image...");
+    //console.log("Uploading Aadhaar image...");
     const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
 
-    console.log("Uploading Pan Card image...");
+    //console.log("Uploading Pan Card image...");
     const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    //console.log("Pan Card image uploaded:", uploadedPanCard.url);
 
-    console.log("Uploading Other Document image...");
+    //console.log("Uploading Other Document image...");
     const uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-    console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
 
     const user = await User.findById(userId);
 
-    console.log("Creating car loan record in the database...");
+    //console.log("Creating car loan record in the database...");
     const personalLoan = await PersonalLoan.create({
       name,
       email,
@@ -284,7 +284,7 @@ export const submitPersonalLoan = async (req, res) => {
       reference2Phone,
       reference2Address,
     });
-    console.log("Personal loan record created successfully.");
+    //console.log("Personal loan record created successfully.");
 
     res.status(200).json({
       message: "Personal loan application submitted successfully",
@@ -365,15 +365,15 @@ export const submitHomeLoan = async (req, res) => {
     const otherDocumentImage = req.files?.otherDocumentImage?.[0];
 
     if (!aadhaarImage) {
-      console.log("Adhaar files not found");
+      //console.log("Adhaar files not found");
       throw new Error("Adhaar files not found");
     }
     if (!panCardImage) {
-      console.log("panCardImage files not found");
+      //console.log("panCardImage files not found");
       throw new Error("panCardImage files not found");
     }
     if (!otherDocumentImage) {
-      console.log("otherDocumentImage files not found");
+      //console.log("otherDocumentImage files not found");
       throw new Error("otherDocumentImage files not found");
     }
 
@@ -383,21 +383,21 @@ export const submitHomeLoan = async (req, res) => {
       });
     }
 
-    console.log("Uploading Aadhaar image...");
+    //console.log("Uploading Aadhaar image...");
     const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
 
-    console.log("Uploading Pan Card image...");
+    //console.log("Uploading Pan Card image...");
     const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    //console.log("Pan Card image uploaded:", uploadedPanCard.url);
 
-    console.log("Uploading Other Document image...");
+    //console.log("Uploading Other Document image...");
     const uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-    console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
 
     const user = await User.findById(userId);
 
-    console.log("Creating Home loan record in the database...");
+    //console.log("Creating Home loan record in the database...");
     const homeLoan = await HomeLoan.create({
       name,
       email,
@@ -440,7 +440,7 @@ export const submitHomeLoan = async (req, res) => {
       reference2Phone,
       reference2Address,
     });
-    console.log("Home loan record created successfully.");
+    //console.log("Home loan record created successfully.");
 
     res.status(200).json({
       message: "Home loan application submitted successfully",
@@ -521,15 +521,15 @@ export const submitBusinessLoan = async (req, res) => {
     const otherDocumentImage = req.files?.otherDocumentImage?.[0];
 
     if (!aadhaarImage) {
-      console.log("Adhaar files not found");
+      //console.log("Adhaar files not found");
       throw new Error("Adhaar files not found");
     }
     if (!panCardImage) {
-      console.log("panCardImage files not found");
+      //console.log("panCardImage files not found");
       throw new Error("panCardImage files not found");
     }
     if (!otherDocumentImage) {
-      console.log("otherDocumentImage files not found");
+      //console.log("otherDocumentImage files not found");
       throw new Error("otherDocumentImage files not found");
     }
 
@@ -539,21 +539,21 @@ export const submitBusinessLoan = async (req, res) => {
       });
     }
 
-    console.log("Uploading Aadhaar image...");
+    //console.log("Uploading Aadhaar image...");
     const uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-    console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+    //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
 
-    console.log("Uploading Pan Card image...");
+    //console.log("Uploading Pan Card image...");
     const uploadedPanCard = await uploadOnCloudinary(panCardImage);
-    console.log("Pan Card image uploaded:", uploadedPanCard.url);
+    //console.log("Pan Card image uploaded:", uploadedPanCard.url);
 
-    console.log("Uploading Other Document image...");
+    //console.log("Uploading Other Document image...");
     const uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-    console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+    //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
 
     const user = await User.findById(userId);
 
-    console.log("Creating Home loan record in the database...");
+    //console.log("Creating Home loan record in the database...");
     const businessLoan = await BusinessLoan.create({
       name,
       email,
@@ -596,7 +596,7 @@ export const submitBusinessLoan = async (req, res) => {
       reference2Phone,
       reference2Address,
     });
-    console.log("Business loan record created successfully.");
+    //console.log("Business loan record created successfully.");
 
     res.status(200).json({
       message: "Business loan application submitted successfully",
@@ -683,17 +683,17 @@ export const updatePersonalLoan = async (req, res) => {
 
     if (aadhaarImage) {
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
 
     if (panCardImage) {
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     if (otherDocumentImage) {
       uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+      //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
     }
 
     // Check if referral ID exists
@@ -754,7 +754,7 @@ export const updatePersonalLoan = async (req, res) => {
       });
     }
 
-    console.log("Personal loan record updated successfully.");
+    //console.log("Personal loan record updated successfully.");
 
     res.status(200).json({
       message: "Personal loan application updated successfully",
@@ -839,21 +839,21 @@ export const updateCarLoan = async (req, res) => {
     let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
 
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
 
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     if (otherDocumentImage) {
-      console.log("Uploading Other Document image...");
+      //console.log("Uploading Other Document image...");
       uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+      //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
     }
 
     // Check if referral ID exists
@@ -908,7 +908,7 @@ export const updateCarLoan = async (req, res) => {
       { new: true }
     );
 
-    console.log("Car loan record updated successfully.");
+    //console.log("Car loan record updated successfully.");
 
     res.status(200).json({
       message: "Car loan application updated successfully",
@@ -993,21 +993,21 @@ export const updateHomeLoan = async (req, res) => {
     let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
 
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
 
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     if (otherDocumentImage) {
-      console.log("Uploading Other Document image...");
+      //console.log("Uploading Other Document image...");
       uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+      //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
     }
 
     // Check if referral ID exists
@@ -1062,7 +1062,7 @@ export const updateHomeLoan = async (req, res) => {
       { new: true }
     );
 
-    console.log("Home loan record updated successfully.");
+    //console.log("Home loan record updated successfully.");
 
     res.status(200).json({
       message: "Home loan application updated successfully",
@@ -1146,21 +1146,21 @@ export const updateBusinessLoan = async (req, res) => {
     let uploadedAadhaar, uploadedPanCard, uploadedOtherDocument;
 
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
 
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     if (otherDocumentImage) {
-      console.log("Uploading Other Document image...");
+      //console.log("Uploading Other Document image...");
       uploadedOtherDocument = await uploadOnCloudinary(otherDocumentImage);
-      console.log("Other Document image uploaded:", uploadedOtherDocument.url);
+      //console.log("Other Document image uploaded:", uploadedOtherDocument.url);
     }
 
     // Check if referral ID exists
@@ -1215,7 +1215,7 @@ export const updateBusinessLoan = async (req, res) => {
       { new: true }
     );
 
-    console.log("Business loan record updated successfully.");
+    //console.log("Business loan record updated successfully.");
 
     res.status(200).json({
       message: "Business loan application updated successfully",
@@ -1255,7 +1255,7 @@ export const getLoanStatus = async (req, res) => {
       allLoans.push({ ...loan.toObject(), loanType: "BusinessLoan" })
     );
 
-    // console.log("All Loans: ", allLoans);
+    // //console.log("All Loans: ", allLoans);
 
     res.status(200).json({ allLoans });
   } catch (error) {
@@ -1384,7 +1384,7 @@ export const getAllPendingLoanList = async (req, res) => {
 export const getLoanList = async (req, res) => {
   const { referralId } = req.query;
   try {
-    console.log(`Fetching loans for refID: ${referralId}`);
+    //console.log(`Fetching loans for refID: ${referralId}`);
     const carLoans = await CarLoan.find({
       referralId: referralId,
       isApproved: false,
@@ -1636,7 +1636,7 @@ const sendRejectedNotification = async (email, loanId) => {
 
 export const approveLoan = async (req, res) => {
   const { _id, email, loanId } = req.body;
-  console.log(email);
+  //console.log(email);
   try {
     let carUpdate = await CarLoan.updateOne(
       { _id },

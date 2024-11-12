@@ -61,9 +61,9 @@ export const backendLogin = async (req, res) => {
       role: "backend",
       referralId: backend.referralId,
     });
-    // console.log("Backend user logged in successfully");
+    // //console.log("Backend user logged in successfully");
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -76,14 +76,14 @@ export const backendSignup = async (req, res) => {
     let uploadedAadhaar;
     let uploadedPanCard;
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
 
     // Check if user already exists
@@ -109,7 +109,7 @@ export const backendSignup = async (req, res) => {
 
     res.status(201).json({ message: "backend created successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -146,7 +146,7 @@ export const backendDelete = async (req, res) => {
         message: "Backend no found",
       });
     }
-    console.log("Backend Deleted");
+    //console.log("Backend Deleted");
     return res.status(200).json({
       message: "backend Deleted",
     });
@@ -168,7 +168,7 @@ export const allBackends = async (req, res) => {
       position: backend.position,
       profileImage: backend.profileImage,
     }));
-    // console.log("Sending allBackend:", allBackend);
+    // //console.log("Sending allBackend:", allBackend);
     return res.status(200).json({ allBackend });
   } catch (error) {
     console.error("Error fetching backend", error.message);
@@ -187,7 +187,7 @@ export const backendLogout = async (req, res) => {
       return res.status(400).json({ message: "Referral ID is required" });
     }
 
-    console.log("Logging out backend:", referralId);
+    //console.log("Logging out backend:", referralId);
 
     // Find the backendq   by referralId (not by ObjectId)
     const backend = await Backend.findOne({ referralId });
@@ -200,7 +200,7 @@ export const backendLogout = async (req, res) => {
     backend.isLogin = false; // Set to boolean false for logout
     await backend.save();
 
-    console.log("Backend updated:", backend);
+    //console.log("Backend updated:", backend);
     res.status(200).json({
       message: "Backend logged out successfully",
       isLogin: backend.isLogin,
@@ -215,7 +215,7 @@ export const backendKYCStatus = async (req, res) => {
   try {
     const { id: BACKENDID } = req.params; // Access AGENTID from params
 
-    // console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
+    // //console.log("Fetching KYC status for agent ID:", AGENTID); // Log the ID being searched
 
     const agent = await Backend.findOne({ _id: BACKENDID }); // Use AGENTID directly
     if (!agent) {
@@ -223,7 +223,7 @@ export const backendKYCStatus = async (req, res) => {
     }
     res.status(200).json({ isKYCVerified: agent.isKYCVerified });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -243,29 +243,29 @@ export const backendKYC = async (req, res) => {
 
     // Check for each file individually and upload
     if (aadhaarImage) {
-      console.log("Uploading Aadhaar image...");
+      //console.log("Uploading Aadhaar image...");
       uploadedAadhaar = await uploadOnCloudinary(aadhaarImage);
-      console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
+      //console.log("Aadhaar image uploaded:", uploadedAadhaar.url);
     }
     if (panCardImage) {
-      console.log("Uploading Pan Card image...");
+      //console.log("Uploading Pan Card image...");
       uploadedPanCard = await uploadOnCloudinary(panCardImage);
-      console.log("Pan Card image uploaded:", uploadedPanCard.url);
+      //console.log("Pan Card image uploaded:", uploadedPanCard.url);
     }
     if (resumeImage) {
-      console.log("Uploading Resume image...");
+      //console.log("Uploading Resume image...");
       uploadedResume = await uploadOnCloudinary(resumeImage);
-      console.log("Resume image uploaded:", uploadedResume.url);
+      //console.log("Resume image uploaded:", uploadedResume.url);
     }
     if (profileImage) {
-      console.log("Uploading Profile image...");
+      //console.log("Uploading Profile image...");
       uploadedProfile = await uploadOnCloudinary(profileImage);
-      console.log("Profile image uploaded:", uploadedProfile.url);
+      //console.log("Profile image uploaded:", uploadedProfile.url);
     }
     // if (otherImage) {
-    //   console.log("Uploading Other image...");
+    //   //console.log("Uploading Other image...");
     //   uploadedOther = await uploadOnCloudinary(otherImage);
-    //   console.log("Other image uploaded:", uploadedOther.url);
+    //   //console.log("Other image uploaded:", uploadedOther.url);
     // }
 
     // Prepare update object
@@ -295,7 +295,7 @@ export const backendKYC = async (req, res) => {
 
     res.status(201).json({ message: "Backend KYC updated successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

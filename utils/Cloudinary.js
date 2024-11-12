@@ -40,7 +40,7 @@ const uploadOnCloudinary = async (file) => {
             console.error("Error uploading to Cloudinary:", error.message);
             reject(error);
           } else {
-            console.log("File uploaded successfully:", result.secure_url); // Use secure_url for HTTPS
+            //console.log("File uploaded successfully:", result.secure_url); // Use secure_url for HTTPS
             resolve(result); // Resolve with the secure HTTPS URL
           }
         }

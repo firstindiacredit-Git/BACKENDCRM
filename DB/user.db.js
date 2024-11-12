@@ -12,7 +12,7 @@ async function dbConnect() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    console.log("Connected to database");
+    //console.log("Connected to database");
   } catch (error) {
     console.error("Error connecting to database:", error);
     throw error;
