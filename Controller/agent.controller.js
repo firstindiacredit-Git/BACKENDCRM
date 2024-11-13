@@ -584,4 +584,6 @@ export default {
   allAgents,
   allAgentsRef,
   agentDetail,
+  agentKYC,
+  agentKYCStatus,
 };

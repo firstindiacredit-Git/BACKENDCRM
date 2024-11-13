@@ -17,6 +17,9 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profileImage: {
+    type: String,
+  },
 });
 adminSchema.statics.hashPassword = async function (password) {
   const salt = await bcrypt.genSalt(10);

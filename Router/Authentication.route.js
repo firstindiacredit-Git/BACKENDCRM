@@ -24,7 +24,11 @@ import {
   agentKYC,
   agentKYCStatus,
 } from "../Controller/agent.controller.js";
-import { adminLogin } from "../Controller/admin.controller.js";
+import {
+  adminLogin,
+  adminProfile,
+  getAllDetailsAdmin,
+} from "../Controller/admin.controller.js";
 import {
   adminSignup,
   allAdmins,
@@ -130,6 +134,16 @@ router1.route("/backend/signup").post(
 
 router1.route("/admin/login").post(adminLogin);
 router1.route("/admin/user").get(allUsers);
+router1.route("/admin/admindetails/:id").get(getAllDetailsAdmin);
+router1.route("/admin/update/:id").post(
+  upload.fields([
+    {
+      name: "profileImage",
+      maxCount: 1,
+    },
+  ]),
+  adminProfile
+);
 router1.get("/admin/dashboard", verifyToken, (req, res) => {
   res.json(req.user);
 });
