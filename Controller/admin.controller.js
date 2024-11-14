@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import Admin from "../Models/AdminData/Admin.models.js";
 import jwt from "jsonwebtoken";
 import { uploadOnCloudinary } from "../utils/Cloudinary.js";
+import { response } from "express";
 dotenv.config({
   path: "./env",
 });
@@ -18,6 +19,22 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({ message: "Token is not valid" });
+  }
+};
+
+export const adminDelete = async (req, res) => {
+  try {
+    const { id } = req.params; // Match parameter name in route
+    const deletedAdmin = await Admin.findByIdAndDelete(id); // Use findByIdAndDelete for simplicity
+
+    if (deletedAdmin) {
+      return res.status(200).json({ message: "Admin Deleted" });
+    } else {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+  } catch (error) {
+    console.error("Error deleting admin:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -106,13 +123,11 @@ export const adminProfile = async (req, res) => {
       { new: true }
     ).select("-password"); // Exclude password from the response
 
-    res
-      .status(200)
-      .json({
-        message: "Profile updated successfully",
-        user: updatedUser,
-        updateImage: Admin.profileImage,
-      });
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+      updateImage: Admin.profileImage,
+    });
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ message: "Internal server error" });

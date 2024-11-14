@@ -25,6 +25,7 @@ import {
   agentKYCStatus,
 } from "../Controller/agent.controller.js";
 import {
+  adminDelete,
   adminLogin,
   adminProfile,
   getAllDetailsAdmin,
@@ -133,6 +134,7 @@ router1.route("/backend/signup").post(
 // -------------------------------ADMIN---------------------------------------//
 
 router1.route("/admin/login").post(adminLogin);
+router1.route("/admin/delete/:id").delete(adminDelete);
 router1.route("/admin/user").get(allUsers);
 router1.route("/admin/admindetails/:id").get(getAllDetailsAdmin);
 router1.route("/admin/update/:id").post(
