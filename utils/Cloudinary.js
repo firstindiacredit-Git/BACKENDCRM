@@ -7,12 +7,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const uploadOnCloudinary = async (file) => {
+const uploadOnCloudinary = async (file, oldPublicId = null) => {
   try {
     if (!file) {
       throw new Error("File is missing");
     }
 
+    if (oldPublicId) {
+      try {
+        await cloudinary.uploader.destroy(oldPublicId);
+        console.log("Old image deleted:", oldPublicId);
+      } catch (error) {
+        console.error(
+          "Error deleting old image from Cloudinary:",
+          error.message
+        );
+        throw error;
+      }
+    }
     // Check if the file is an image or PDF
     const validFileTypes = [
       "image/jpeg",

@@ -65,8 +65,14 @@ const agentExists = async (referralId) => {
 
 const userExists = async (email, phone) => {
   const user = await User.findOne({ email, phone });
-  //console.log(!!user);
-  //console.log(email, phone);
+  return !!user;
+};
+const userPhoneExists = async (phone) => {
+  const user = await User.findOne({ phone });
+  return !!user;
+};
+const userEmailExists = async (email) => {
+  const user = await User.findOne({ email });
   return !!user;
 };
 
@@ -85,37 +91,6 @@ const verifyToken = (req, res, next) => {
   }
 };
 
-// export const agentLogin = async (req, res) => {
-//   try {
-//     const { referralId, password } = req.body;
-
-//     // Check if agent exists
-//     const agent = await Agent.findOne({ referralId });
-//     if (!agent) {
-//       return res.status(400).json({ message: "Agent does not exist." });
-//     }
-
-//     const isMatch = await agent.comparePassword(password);
-//     if (!isMatch) {
-//       return res.status(400).json({ message: "Invalid credentials" });
-//     }
-
-//     agent.isLogin = true;
-//     await agent.save();
-
-//     // Generate JWT token
-//     const token = jwt.sign(
-//       { referralId, agentId: agent._id },
-//       process.env.JWTSECRET
-//     );
-
-//     res.status(200).json({ token, referralId, agentId: agent._id });
-//     //console.log("Agent Logged in Successfully");
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Internal server error" });
-//   }
-// };
 export const agentLogin = async (req, res) => {
   try {
     const { referralId, password } = req.body;
@@ -381,9 +356,15 @@ export const userSignup = async (req, res) => {
     if (await userExists(email, phone)) {
       return res.status(400).json({ message: "User already exists" });
     }
-
+    if (await userPhoneExists(phone)) {
+      return res.status(400).json({
+        message: "Phone Number already exists",
+      });
+    }
+    if (await userEmailExists(email)) {
+      return res.status(400).json({ message: "Email already exists" });
+    }
     const hashedPassword = await User.hashPassword(password);
-
     const user = new User({
       firstName,
       lastName,
@@ -420,18 +401,15 @@ export const userSignup = async (req, res) => {
       console.error("Email password", process.env.EMAIL_PASS);
       console.error("email user", process.env.EMAIL_USER);
       console.error("Error sending OTP email:", error);
-      // Consider logging the error and sending a notification to the admin
-      // You can return a specific error code for email sending issue here
     }
 
     res.status(201).json({
       message: "User created successfully, Check your email for verification",
       userId: savedUser._id,
-      redirectUrl: "api/v1/user/verify-otp", // Replace with your actual URL
+      redirectUrl: "api/v1/user/verify-otp",
     });
   } catch (error) {
     console.error("Error during user signup:", error);
-    // Log the error with details for debugging
     res.status(500).json({ message: "Internal server error" });
   }
 };
